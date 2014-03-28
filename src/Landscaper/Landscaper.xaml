@@ -3,30 +3,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow"
         WindowState="Maximized">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ImageSource x:Key="0">Content/Tiles/0.png</ImageSource>
+            <ImageSource x:Key="1">Content/Tiles/1.png</ImageSource>
+            <ImageSource x:Key="2">Content/Tiles/2.png</ImageSource>
+            <ImageSource x:Key="3">Content/Tiles/3.png</ImageSource>
+            <ImageSource x:Key="4">Content/Tiles/4.png</ImageSource>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
         
-        <Menu Grid.ColumnSpan="2">
-            <Label>File</Label>
-        </Menu>
+        <ScrollViewer Grid.Column="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <Canvas Name="Map"
+                    PreviewMouseDown="OnMouseDown" 
+                    PreviewMouseUp="OnMouseUp"
+                    MouseMove="OnMouseMove"
+                    Background="Fuchsia" />
+        </ScrollViewer>
         
-        <Canvas Grid.Row="1"
-                Grid.Column="0"
-                Name="Map"
-                PreviewMouseDown="OnMouseDown" 
-                PreviewMouseUp="OnMouseUp"
-                MouseMove="OnMouseMove"
-                Background="YellowGreen"/>
-        
-        <StackPanel Grid.Row="1" 
-                    Grid.Column="1" 
+        <StackPanel Grid.Column="1" 
                     Name="Toolbar" />
     </Grid>
 </Window>

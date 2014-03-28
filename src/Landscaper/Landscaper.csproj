@@ -61,8 +61,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Enums.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Landscaper.xaml.cs">
       <DependentUpon>Landscaper.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -95,6 +95,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Tiles\0.png" />
+    <Resource Include="Content\Tiles\1.png" />
+    <Resource Include="Content\Tiles\2.png" />
+    <Resource Include="Content\Tiles\3.png" />
+    <Resource Include="Content\Tiles\4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

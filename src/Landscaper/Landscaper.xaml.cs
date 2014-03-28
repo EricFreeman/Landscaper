@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Landscaper.Models;
 
@@ -14,7 +16,7 @@ namespace Landscaper
 
         private Point startPoint;
         private Tool selectedTool = Tool.Paint;
-        private bool isDragging = false;
+        private bool isDragging;
 
         private Rectangle selectionRectangle = new Rectangle
         {
@@ -49,6 +51,13 @@ namespace Landscaper
         {
             startPoint = e.GetPosition(Map);
 
+            switch (selectedTool)
+            {
+                case Tool.Draw:
+                    PlaceTile(startPoint);
+                    return;
+            }
+
             isDragging = true;
         }
 
@@ -58,9 +67,6 @@ namespace Landscaper
 
             switch (selectedTool)
             {
-                case Tool.Draw:
-                    PlaceTile(currentPos);
-                    break;
                 case Tool.Paint:
                     PlaceTile(startPoint, currentPos);
                     break;
@@ -120,12 +126,12 @@ namespace Landscaper
             for (int x = b.LowerX; x <= b.UpperX; x += TILE_SIZE)
                 for (int y = b.LowerY; y <= b.UpperY; y += TILE_SIZE)
                 {
+                    var im = new Image {Width = TILE_SIZE, Height = TILE_SIZE, Source = (ImageSource) FindResource("1")};
                     var rec = new Rectangle
                     {
                         Width = TILE_SIZE,
                         Height = TILE_SIZE,
-                        Stroke = new SolidColorBrush(Colors.Black),
-                        Fill = new SolidColorBrush(Colors.Black)
+                        Fill = new ImageBrush(im.Source)
                     };
 
                     Canvas.SetLeft(rec, x);
