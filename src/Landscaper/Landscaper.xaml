@@ -1,0 +1,32 @@
+﻿<Window x:Class="Landscaper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow"
+        WindowState="Maximized">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="100" />
+        </Grid.ColumnDefinitions>
+        
+        <Menu Grid.ColumnSpan="2">
+            <Label>File</Label>
+        </Menu>
+        
+        <Canvas Grid.Row="1"
+                Grid.Column="0"
+                Name="Map"
+                PreviewMouseDown="OnMouseDown" 
+                PreviewMouseUp="OnMouseUp"
+                MouseMove="OnMouseMove"
+                Background="YellowGreen"/>
+        
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="1" 
+                    Name="Toolbar" />
+    </Grid>
+</Window>
