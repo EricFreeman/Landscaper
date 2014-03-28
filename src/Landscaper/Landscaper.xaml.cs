@@ -121,6 +121,7 @@ namespace Landscaper
 
             RemoveExistingTilesBetween(start, end);
             PlaceTilesBetween(start, end);
+            PlaceSelectionRectangleOnTop();
         }
 
         private void RemoveExistingTilesBetween(Point start, Point end)
@@ -153,6 +154,13 @@ namespace Landscaper
                     Canvas.SetTop(rec, y);
                     Map.Children.Add(rec);
                 }
+        }
+
+        //TODO: This sucks.  Future Eric, please find a better way!
+        private void PlaceSelectionRectangleOnTop()
+        {
+            Map.Children.Remove(selectionRectangle);
+            Map.Children.Add(selectionRectangle);
         }
 
         #endregion
