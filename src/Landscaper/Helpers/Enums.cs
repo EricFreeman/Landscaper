@@ -5,6 +5,7 @@
         Selection,
         Draw,
         Paint,
+        Remove,
         Wall,
         Door
     }

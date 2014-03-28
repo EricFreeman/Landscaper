@@ -1,11 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Landscaper.Helpers;
 using Landscaper.Models;
 
 namespace Landscaper
@@ -70,6 +69,9 @@ namespace Landscaper
                 case Tool.Paint:
                     PlaceTile(startPoint, currentPos);
                     break;
+                case Tool.Remove:
+                    RemoveExistingTilesBetween(startPoint, currentPos);
+                    break;
             }
 
             isDragging = false;
@@ -95,6 +97,16 @@ namespace Landscaper
 
         #endregion
 
+        #region Toolbar
+
+        private void OnToolbarSelect(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var b = (Button) sender;
+            Enum.TryParse(b.Name, out selectedTool);
+        }
+
+        #endregion
+
         #region Placing Tiles
 
         private void PlaceTile(Point start)
@@ -113,10 +125,13 @@ namespace Landscaper
 
         private void RemoveExistingTilesBetween(Point start, Point end)
         {
-            var tiles = Map.Children.OfType<Rectangle>().Where(x => x.RenderedGeometry.Bounds.WithinBounds(start, end));
+            var tiles = Map.Children.OfType<Rectangle>()
+                .Where(x => x != selectionRectangle)
+                .Where(x => x.WithinBounds(start.ConvertToTilePosition(TILE_SIZE), end.ConvertToTilePosition(TILE_SIZE)))
+                .ToList();
             
-            foreach (var tile in tiles)
-                Map.Children.Remove(tile);
+            for(int i = tiles.Count() - 1; i >= 0; i--)
+                Map.Children.Remove(tiles[i]);
         }
 
         private void PlaceTilesBetween(Point start, Point end)

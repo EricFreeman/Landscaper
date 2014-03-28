@@ -29,6 +29,31 @@
         </ScrollViewer>
         
         <StackPanel Grid.Column="1" 
-                    Name="Toolbar" />
+                    Name="Toolbar">
+            <Button Name="Selection"
+                    PreviewMouseUp="OnToolbarSelect">
+                <Label>Selection</Label>
+            </Button>
+            <Button Name="Draw"
+                    PreviewMouseUp="OnToolbarSelect">
+                <Label>Draw</Label>
+            </Button>
+            <Button Name="Paint"
+                    PreviewMouseUp="OnToolbarSelect">
+                <Label>Paint</Label>
+            </Button>
+            <Button Name="Remove"
+                    PreviewMouseUp="OnToolbarSelect">
+                <Label>Remove</Label>
+            </Button>
+            <Button Name="Wall"
+                    PreviewMouseUp="OnToolbarSelect">
+                <Label>Wall</Label>
+            </Button>
+            <Button Name="Door"
+                    PreviewMouseUp="OnToolbarSelect">
+                <Label>Door</Label>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>
