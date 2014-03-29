@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
 using Landscaper.Models;
@@ -26,6 +29,9 @@ namespace Landscaper
             Fill = new SolidColorBrush(Colors.Transparent)
         };
 
+        private List<Tile> _tileList = new List<Tile>();
+        private Tile _selectedTile;
+
         #endregion
 
         #region Constants
@@ -34,13 +40,31 @@ namespace Landscaper
 
         #endregion
 
-        #region Constructor
+        #region Setup
 
         public MainWindow()
         {
             InitializeComponent();
 
             Map.Children.Add(selectionRectangle);
+            LoadTiles();
+        }
+
+        private void LoadTiles()
+        {
+            var di = new DirectoryInfo("Content/Tiles/");
+            foreach (var file in di.GetFiles())
+            {
+                _tileList.Add(new Tile
+                {
+                    Name = file.Name,
+                    Image = new Image
+                    {
+                        Source = new BitmapImage(new Uri(file.FullName))
+                    }
+                });
+            }
+            _selectedTile = _tileList.FirstOrDefault();
         }
 
         #endregion
@@ -143,7 +167,7 @@ namespace Landscaper
             for (int x = b.LowerX; x <= b.UpperX; x += TILE_SIZE)
                 for (int y = b.LowerY; y <= b.UpperY; y += TILE_SIZE)
                 {
-                    var im = new Image {Width = TILE_SIZE, Height = TILE_SIZE, Source = (ImageSource) FindResource("1")};
+                    var im = new Image {Width = TILE_SIZE, Height = TILE_SIZE, Source = _selectedTile.Image.Source};
                     var rec = new Rectangle
                     {
                         Width = TILE_SIZE,

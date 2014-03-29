@@ -3,16 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Landscaper"
         WindowState="Maximized">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ImageSource x:Key="0">Content/Tiles/0.png</ImageSource>
-            <ImageSource x:Key="1">Content/Tiles/1.png</ImageSource>
-            <ImageSource x:Key="2">Content/Tiles/2.png</ImageSource>
-            <ImageSource x:Key="3">Content/Tiles/3.png</ImageSource>
-            <ImageSource x:Key="4">Content/Tiles/4.png</ImageSource>
-        </ResourceDictionary>
-    </Window.Resources>
-    <Grid>
+   <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
