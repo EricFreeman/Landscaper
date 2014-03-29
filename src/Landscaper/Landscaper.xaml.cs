@@ -29,7 +29,7 @@ namespace Landscaper
 
         #region Constants
 
-        private const int TILE_SIZE = 16;
+        private const int TILE_SIZE = 32;
 
         #endregion
 

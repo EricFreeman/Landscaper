@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="150" />
         </Grid.ColumnDefinitions>
         
         <Menu Grid.Row="0"
@@ -46,30 +46,48 @@
         <StackPanel Grid.Row="1"
                     Grid.Column="1" 
                     Name="Toolbar">
-            <Button Name="Selection"
-                    PreviewMouseUp="OnToolbarSelect">
-                <Label>Selection</Label>
-            </Button>
-            <Button Name="Draw"
-                    PreviewMouseUp="OnToolbarSelect">
-                <Label>Draw</Label>
-            </Button>
-            <Button Name="Paint"
-                    PreviewMouseUp="OnToolbarSelect">
-                <Label>Paint</Label>
-            </Button>
-            <Button Name="Remove"
-                    PreviewMouseUp="OnToolbarSelect">
-                <Label>Remove</Label>
-            </Button>
-            <Button Name="Wall"
-                    PreviewMouseUp="OnToolbarSelect">
-                <Label>Wall</Label>
-            </Button>
-            <Button Name="Door"
-                    PreviewMouseUp="OnToolbarSelect">
-                <Label>Door</Label>
-            </Button>
+            <TabControl>
+                <TabItem Header="Tools">
+                    <TabPanel>
+                        <StackPanel Width="140">
+                            <Button Name="Selection"
+                                    PreviewMouseUp="OnToolbarSelect">
+                                <Label>Selection</Label>
+                            </Button>
+                            <Button Name="Draw"
+                                    PreviewMouseUp="OnToolbarSelect">
+                                <Label>Draw</Label>
+                            </Button>
+                            <Button Name="Paint"
+                                    PreviewMouseUp="OnToolbarSelect">
+                                <Label>Paint</Label>
+                            </Button>
+                            <Button Name="Remove"
+                                    PreviewMouseUp="OnToolbarSelect">
+                                <Label>Remove</Label>
+                            </Button>
+                            <Button Name="Wall"
+                                    PreviewMouseUp="OnToolbarSelect">
+                                <Label>Wall</Label>
+                            </Button>
+                            <Button Name="Door"
+                                    PreviewMouseUp="OnToolbarSelect">
+                                <Label>Door</Label>
+                            </Button>
+                        </StackPanel>
+                    </TabPanel>
+                </TabItem>
+                <TabItem Header="Tiles">
+                    <TabPanel>
+                        <Label>Put tiles here</Label>
+                    </TabPanel>    
+                </TabItem>
+                <TabItem Header="Items">
+                    <TabPanel>
+                        <Label>Put items here</Label>
+                    </TabPanel>
+                </TabItem>
+            </TabControl>
         </StackPanel>
     </Grid>
 </Window>
