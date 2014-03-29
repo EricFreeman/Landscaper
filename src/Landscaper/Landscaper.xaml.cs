@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
@@ -101,7 +102,7 @@ namespace Landscaper
 
         private void OnToolbarSelect(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var b = (Button) sender;
+            var b = (ToggleButton) sender;
             Enum.TryParse(b.Name, out selectedTool);
         }
 

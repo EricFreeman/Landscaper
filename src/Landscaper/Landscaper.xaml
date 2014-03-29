@@ -50,30 +50,37 @@
                 <TabItem Header="Tools">
                     <TabPanel>
                         <StackPanel Width="140">
-                            <Button Name="Selection"
-                                    PreviewMouseUp="OnToolbarSelect">
+                            <RadioButton Name="Selection"
+                                         PreviewMouseUp="OnToolbarSelect"
+                                         Style="{StaticResource {x:Type ToggleButton}}">
                                 <Label>Selection</Label>
-                            </Button>
-                            <Button Name="Draw"
-                                    PreviewMouseUp="OnToolbarSelect">
+                            </RadioButton>
+                            <RadioButton Name="Draw"
+                                         PreviewMouseUp="OnToolbarSelect"
+                                         Style="{StaticResource {x:Type ToggleButton}}">
                                 <Label>Draw</Label>
-                            </Button>
-                            <Button Name="Paint"
-                                    PreviewMouseUp="OnToolbarSelect">
+                            </RadioButton>
+                            <RadioButton Name="Paint"
+                                         PreviewMouseUp="OnToolbarSelect"
+                                         Style="{StaticResource {x:Type ToggleButton}}"
+                                         IsChecked="True">
                                 <Label>Paint</Label>
-                            </Button>
-                            <Button Name="Remove"
-                                    PreviewMouseUp="OnToolbarSelect">
+                            </RadioButton>
+                            <RadioButton Name="Remove"
+                                          PreviewMouseUp="OnToolbarSelect"
+                                          Style="{StaticResource {x:Type ToggleButton}}">
                                 <Label>Remove</Label>
-                            </Button>
-                            <Button Name="Wall"
-                                    PreviewMouseUp="OnToolbarSelect">
+                            </RadioButton>
+                            <RadioButton Name="Wall"
+                                          PreviewMouseUp="OnToolbarSelect"
+                                          Style="{StaticResource {x:Type ToggleButton}}">
                                 <Label>Wall</Label>
-                            </Button>
-                            <Button Name="Door"
-                                    PreviewMouseUp="OnToolbarSelect">
+                            </RadioButton>
+                            <RadioButton Name="Door"
+                                          PreviewMouseUp="OnToolbarSelect"
+                                          Style="{StaticResource {x:Type ToggleButton}}">
                                 <Label>Door</Label>
-                            </Button>
+                            </RadioButton>
                         </StackPanel>
                     </TabPanel>
                 </TabItem>
