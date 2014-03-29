@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Landscaper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow"
+        Title="Landscaper"
         WindowState="Maximized">
     <Window.Resources>
         <ResourceDictionary>
@@ -13,12 +13,27 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
         
-        <ScrollViewer Grid.Column="0"
+        <Menu Grid.Row="0"
+              Grid.ColumnSpan="2">
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Save"/>
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Exit"></MenuItem>
+            </MenuItem>
+        </Menu>
+        
+        <ScrollViewer Grid.Row="1"
+                      Grid.Column="0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <Canvas Name="Map"
@@ -28,7 +43,8 @@
                     Background="Fuchsia" />
         </ScrollViewer>
         
-        <StackPanel Grid.Column="1" 
+        <StackPanel Grid.Row="1"
+                    Grid.Column="1" 
                     Name="Toolbar">
             <Button Name="Selection"
                     PreviewMouseUp="OnToolbarSelect">
