@@ -4,7 +4,7 @@ namespace Landscaper.Models
 {
     public class Tile
     {
-        public string Name;
-        public Image Image;
+        public string Name { get; set; }
+        public Image Image { get; set; }
     }
 }

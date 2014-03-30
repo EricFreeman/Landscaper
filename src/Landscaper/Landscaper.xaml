@@ -1,9 +1,15 @@
 ﻿<Window x:Class="Landscaper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:helpers="clr-namespace:Landscaper.Helpers"
         Title="Landscaper"
         WindowState="Maximized">
-   <Grid>
+  
+  <Window.Resources>
+    <helpers:ImageToSourceConverter x:Key="ImageToSourceConverter"/>
+  </Window.Resources>
+  
+  <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -40,7 +46,7 @@
             <TabControl>
                 <TabItem Header="Tools">
                     <TabPanel>
-                        <StackPanel Width="140">
+                        <StackPanel Width="144">
                             <RadioButton Name="Selection"
                                          PreviewMouseUp="OnToolbarSelect"
                                          Style="{StaticResource {x:Type ToggleButton}}">
@@ -76,9 +82,24 @@
                     </TabPanel>
                 </TabItem>
                 <TabItem Header="Tiles">
+                    
                     <TabPanel>
-                        <Label>Put tiles here</Label>
-                    </TabPanel>    
+                      
+                    <ListBox x:Name="TilesListBox" PreviewMouseUp="SelectNewTileBrush">
+                      <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                              <WrapPanel>
+                                <Image Source="{Binding Path=Image, Converter={StaticResource ImageToSourceConverter}}" />
+                                <Label Content="{Binding Path=Name}" />
+                              </WrapPanel>
+
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                      
+                    </TabPanel>
+                  
                 </TabItem>
                 <TabItem Header="Items">
                     <TabPanel>

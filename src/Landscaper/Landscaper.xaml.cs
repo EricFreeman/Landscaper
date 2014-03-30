@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -29,7 +31,7 @@ namespace Landscaper
             Fill = new SolidColorBrush(Colors.Transparent)
         };
 
-        private List<Tile> _tileList = new List<Tile>();
+        public ObservableCollection<Tile> TileList = new ObservableCollection<Tile>();
         private Tile _selectedTile;
 
         #endregion
@@ -55,16 +57,17 @@ namespace Landscaper
             var di = new DirectoryInfo("Content/Tiles/");
             foreach (var file in di.GetFiles())
             {
-                _tileList.Add(new Tile
+                TileList.Add(new Tile
                 {
-                    Name = file.Name,
+                    Name = file.Name.Replace(file.Extension, string.Empty),
                     Image = new Image
                     {
                         Source = new BitmapImage(new Uri(file.FullName))
                     }
                 });
             }
-            _selectedTile = _tileList.FirstOrDefault();
+            TilesListBox.ItemsSource = TileList;
+            _selectedTile = TileList.FirstOrDefault();
         }
 
         #endregion
@@ -124,10 +127,15 @@ namespace Landscaper
 
         #region Toolbar
 
-        private void OnToolbarSelect(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnToolbarSelect(object sender, MouseButtonEventArgs e)
         {
             var b = (ToggleButton) sender;
             Enum.TryParse(b.Name, out selectedTool);
+        }
+
+        private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)
+        {
+            _selectedTile = (Tile)((ListBox) sender).SelectedItem;
         }
 
         #endregion
