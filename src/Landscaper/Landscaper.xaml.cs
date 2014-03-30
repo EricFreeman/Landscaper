@@ -74,7 +74,7 @@ namespace Landscaper
 
         #region Mouse Handlers
 
-        private void OnMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             startPoint = e.GetPosition(Map);
 
@@ -88,7 +88,7 @@ namespace Landscaper
             isDragging = true;
         }
 
-        private void OnMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             var currentPos = e.GetPosition(Map);
 
@@ -100,6 +100,9 @@ namespace Landscaper
                 case Tool.Remove:
                     RemoveExistingTilesBetween(startPoint, currentPos);
                     break;
+                case Tool.Wall:
+                    PlaceWall(startPoint, currentPos);
+                    break;
             }
 
             isDragging = false;
@@ -107,7 +110,7 @@ namespace Landscaper
             selectionRectangle.Height = TILE_SIZE;
         }
 
-        private void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnMouseMove(object sender, MouseEventArgs e)
         {
             var end = e.GetPosition(Map).ConvertToTilePosition(TILE_SIZE);
             var start = isDragging ? startPoint.ConvertToTilePosition(TILE_SIZE) : end;
@@ -194,6 +197,25 @@ namespace Landscaper
         {
             Map.Children.Remove(selectionRectangle);
             Map.Children.Add(selectionRectangle);
+        }
+
+        #endregion
+
+        #region Placing Walls
+
+        public void PlaceWall(Point start, Point end)
+        {
+            start = start.ConvertToTilePosition(TILE_SIZE);
+            end = end.ConvertToTilePosition(TILE_SIZE);
+
+            Map.Children.Add(new Line
+            {
+                X1 = start.X,
+                Y1 = start.Y,
+                X2 = end.X,
+                Y2 = end.Y,
+                Stroke = new SolidColorBrush(Colors.Gray)
+            });
         }
 
         #endregion
