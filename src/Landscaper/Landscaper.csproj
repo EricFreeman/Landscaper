@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Bounds.cs" />
+    <Compile Include="Models\Door.cs" />
     <Compile Include="Models\Tile.cs" />
     <Compile Include="Models\Wall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

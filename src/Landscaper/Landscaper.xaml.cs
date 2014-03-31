@@ -19,6 +19,7 @@ namespace Landscaper
     {
         #region Private Properties
 
+        private Tile _selectedTile;
         private Point startPoint;
         private Tool selectedTool = Tool.Paint;
         private bool isDragging;
@@ -31,9 +32,15 @@ namespace Landscaper
             Fill = new SolidColorBrush(Colors.Transparent)
         };
 
+
+        #endregion
+
+        #region Public Properties
+
         public ObservableCollection<Tile> TileList = new ObservableCollection<Tile>();
         public List<Wall> WallList = new List<Wall>();
-        private Tile _selectedTile;
+        public List<Door> DoorList = new List<Door>(); 
+
 
         #endregion
 
@@ -45,8 +52,9 @@ namespace Landscaper
         private const int WALL_LAYER = 1;
         private const int ITEM_FLOOR_LAYER = 2;
         private const int PEOPLE_LAYER = 3;
-        private const int ITEMS_TOP_LAYER = 4;
-        private const int SELECTION_RECTANGLE_LAYER = 5;
+        private const int DOOR_LAYER = 4;
+        private const int ITEMS_TOP_LAYER = 5;
+        private const int SELECTION_RECTANGLE_LAYER = 6;
 
         #endregion
 
@@ -91,6 +99,9 @@ namespace Landscaper
             {
                 case Tool.Draw:
                     PlaceTile(startPoint);
+                    return;
+                case Tool.Door:
+                    PlaceDoor(startPoint);
                     return;
             }
 
@@ -162,6 +173,7 @@ namespace Landscaper
         {
             Map.Children.Clear();
             WallList.Clear();
+            DoorList.Clear();
         }
 
         private void OnSave(object sender, RoutedEventArgs e)
@@ -323,6 +335,46 @@ namespace Landscaper
                         RemoveWallByLine(w);
 
             }
+        }
+
+        #endregion
+
+        #region Doors
+
+        private void PlaceDoor(Point start)
+        {
+            //figure out if they meant to put door on left or top of tile
+            var left = start.X % TILE_SIZE;
+            var top = start.Y % TILE_SIZE;
+            start = start.ConvertToTilePosition(TILE_SIZE);
+
+            var d = new Door
+            {
+                Line = new Line
+                {
+                    Stroke = new SolidColorBrush(Colors.DarkGray),
+                    StrokeThickness = 5,
+                    X1 = start.X,
+                    X2 = start.X,
+                    Y1 = start.Y,
+                    Y2 = start.Y
+                }
+            };
+
+            if (left < top) // they were closer to left side of tile
+            {
+                d.Rotation = 0;
+                d.Line.Y2 += TILE_SIZE;
+            }
+            else // else they were closer to top, or were equal distances at which point I'm putting it here because the user is an indecisive bastard
+            {
+                d.Rotation = 90;
+                d.Line.X2 += TILE_SIZE;
+            }
+
+            Canvas.SetZIndex(d.Line, DOOR_LAYER);
+            Map.Children.Add(d.Line);
+            DoorList.Add(d);
         }
 
         #endregion
