@@ -106,6 +106,7 @@ namespace Landscaper
                     break;
                 case Tool.Remove:
                     RemoveExistingTilesBetween(startPoint, currentPos);
+                    RemoveWallsBetween(startPoint.ConvertToTilePosition(TILE_SIZE), currentPos.ConvertToTilePosition(TILE_SIZE));
                     break;
                 case Tool.Wall:
                     PlaceWall(startPoint, currentPos);
@@ -153,7 +154,7 @@ namespace Landscaper
 
         #endregion
 
-        #region Placing Tiles
+        #region Tiles
 
         private void PlaceTile(Point start)
         {
@@ -204,7 +205,7 @@ namespace Landscaper
 
         #endregion
 
-        #region Placing Walls
+        #region Walls
 
         public void PlaceWall(Point start, Point end)
         {
@@ -228,6 +229,59 @@ namespace Landscaper
 
             Canvas.SetZIndex(l, WALL_LAYER);
             Map.Children.Add(l);
+        }
+
+        //TODO: Future Eric, make this not so duplicated and unreadable
+        private void RemoveWallsBetween(Point start, Point end)
+        {
+            var walls = Map.Children.OfType<Line>()
+                .Where(x => x.WithinBounds(start, end))
+                .ToList();
+
+            var b = new Bounds(start, end); // removal bounds
+
+            for (int i = walls.Count() - 1; i >= 0; i--)
+            {
+                var w = walls[i];
+                if (Math.Abs(w.X2 - w.X1) > Math.Abs(w.Y2 - w.Y1)) // is a horizontal wall
+                {
+                    b.UpperX += TILE_SIZE;
+
+                    if (b.LowerX <= w.X1 && b.UpperX <= w.X2) // covers only left side of wall
+                        w.X1 = b.UpperX;
+                    else if (b.LowerX <= w.X2 && b.LowerX > w.X1 && b.UpperX >= w.X2) // covers only right side of wall
+                        w.X2 = b.LowerX;
+                    else if(b.LowerX <= w.X1 && b.UpperX >= w.X2) // covers entire wall
+                        Map.Children.Remove(w);
+                    else if(b.LowerX > w.X1 && b.UpperX < w.X2) // covers middle of wall
+                    {
+                        var oldEnd = w.X2;
+                        w.X2 = b.LowerX;
+                        PlaceWall(new Point(b.UpperX, w.Y1), new Point(oldEnd - TILE_SIZE, w.Y1));
+                    }
+                }
+                else
+                {
+                    b.UpperY += TILE_SIZE;
+
+                    if (b.LowerY <= w.Y1 && b.UpperY <= w.Y2) // covers only left side of wall
+                        w.Y1 = b.UpperY;
+                    else if (b.LowerY <= w.Y2 && b.LowerY > w.Y1 && b.UpperY >= w.Y2) // covers only right side of wall
+                        w.Y2 = b.LowerY;
+                    else if (b.LowerY <= w.Y1 && b.UpperY >= w.Y2) // covers entire wall
+                        Map.Children.Remove(w);
+                    else if (b.LowerY > w.Y1 && b.UpperY < w.Y2) // covers middle of wall
+                    {
+                        var oldEnd = w.Y2;
+                        w.Y2 = b.LowerY;
+                        PlaceWall(new Point(w.X1, b.UpperY), new Point(w.X1, oldEnd - TILE_SIZE));
+                    }
+                }
+
+                if (w.X1 - w.X2 == 0 && w.Y1 - w.Y2 == 0)
+                    Map.Children.Remove(w);
+
+            }
         }
 
         #endregion

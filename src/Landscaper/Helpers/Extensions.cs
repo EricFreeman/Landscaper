@@ -7,9 +7,29 @@ namespace Landscaper.Helpers
 {
     public static class Extensions
     {
-        public static bool WithinBounds(this Rectangle b, Point s, Point e)
+        public static bool WithinBounds(this Shape b, Point s, Point e)
         {
-            return new Rect(s, e).IntersectsWith(new Rect(Canvas.GetLeft(b) - 1, Canvas.GetTop(b) - 1, b.Width, b.Height));
+            double x, y, width, height;
+
+            if (b is Line)
+            {
+                var bl = (b as Line);
+                var bo = new Bounds(new Point(bl.X1, bl.Y1), new Point(bl.X2, bl.Y2));
+
+                x = bo.LowerX;
+                y = bo.LowerY;
+                width = bo.UpperX - x;
+                height = bo.UpperY - y;
+            }
+            else
+            {
+                x = Canvas.GetLeft(b) - 1;
+                y = Canvas.GetTop(b) - 1;
+                width = b.Width;
+                height = b.Height;
+            }
+
+            return new Rect(s, e).IntersectsWith(new Rect(x, y, width, height));
         }
 
         public static Point ConvertToTilePosition(this Point p, int size)
@@ -26,13 +46,9 @@ namespace Landscaper.Helpers
         {
             if (b.LowerX != b.UpperX && b.LowerY != b.UpperY)
             {
-                // First find longest distance because that's the way they're dragging
-                var hor = b.UpperX - b.LowerX;
-                var ver = b.UpperY - b.LowerY;
-
-                if (hor > ver) // Dragging horizontally
+                if (b.IsHorizontal) // Dragging horizontally
                     b.UpperY = b.LowerY;
-                else
+                else if(b.IsVertical)
                     b.UpperX = b.LowerX;
             }
 

@@ -9,6 +9,12 @@ namespace Landscaper.Models
         public int LowerY;
         public int UpperY;
 
+        public bool IsHorizontal { get { return hor > ver; } }
+        public bool IsVertical { get { return ver > hor; } }
+
+        private int hor { get { return UpperX - LowerX; } }
+        private int ver { get { return UpperY - LowerY; } }
+
         public Bounds(Point start, Point end)
         {
             LowerX = (int)(start.X < end.X ? start.X : end.X);
