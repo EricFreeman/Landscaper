@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -40,6 +39,13 @@ namespace Landscaper
 
         private const int TILE_SIZE = 32;
 
+        private const int FLOOR_LAYER = 0;
+        private const int WALL_LAYER = 1;
+        private const int ITEM_FLOOR_LAYER = 2;
+        private const int PEOPLE_LAYER = 3;
+        private const int ITEMS_TOP_LAYER = 4;
+        private const int SELECTION_RECTANGLE_LAYER = 5;
+
         #endregion
 
         #region Setup
@@ -48,6 +54,7 @@ namespace Landscaper
         {
             InitializeComponent();
 
+            Canvas.SetZIndex(selectionRectangle, SELECTION_RECTANGLE_LAYER);
             Map.Children.Add(selectionRectangle);
             LoadTiles();
         }
@@ -121,7 +128,10 @@ namespace Landscaper
 
             if (isDragging)
             {
-                selectionRectangle.Width =  b.UpperX - b.LowerX + TILE_SIZE;
+                if (selectedTool == Tool.Wall)
+                    b = b.KeepBoundsWidthOf1();
+
+                selectionRectangle.Width = b.UpperX - b.LowerX + TILE_SIZE;
                 selectionRectangle.Height = b.UpperY - b.LowerY + TILE_SIZE;
             }
         }
@@ -157,7 +167,6 @@ namespace Landscaper
 
             RemoveExistingTilesBetween(start, end);
             PlaceTilesBetween(start, end);
-            PlaceSelectionRectangleOnTop();
         }
 
         private void RemoveExistingTilesBetween(Point start, Point end)
@@ -188,15 +197,9 @@ namespace Landscaper
 
                     Canvas.SetLeft(rec, x);
                     Canvas.SetTop(rec, y);
+                    Canvas.SetZIndex(rec, FLOOR_LAYER);
                     Map.Children.Add(rec);
                 }
-        }
-
-        //TODO: This sucks.  Future Eric, please find a better way!
-        private void PlaceSelectionRectangleOnTop()
-        {
-            Map.Children.Remove(selectionRectangle);
-            Map.Children.Add(selectionRectangle);
         }
 
         #endregion
@@ -207,15 +210,24 @@ namespace Landscaper
         {
             start = start.ConvertToTilePosition(TILE_SIZE);
             end = end.ConvertToTilePosition(TILE_SIZE);
+            var b = new Bounds(start, end).KeepBoundsWidthOf1();
 
-            Map.Children.Add(new Line
+            //hack to add last tile of wall since walls start at 0,0 but should go the full length of last tile
+            if (b.LowerX == b.UpperX) b.UpperY += TILE_SIZE;
+            else if (b.LowerY == b.UpperY) b.UpperX += TILE_SIZE;
+
+            var l = new Line
             {
-                X1 = start.X,
-                Y1 = start.Y,
-                X2 = end.X,
-                Y2 = end.Y,
-                Stroke = new SolidColorBrush(Colors.Gray)
-            });
+                X1 = b.LowerX,
+                Y1 = b.LowerY,
+                X2 = b.UpperX,
+                Y2 = b.UpperY,
+                Stroke = new SolidColorBrush(Colors.Gray),
+                StrokeThickness = 3
+            };
+
+            Canvas.SetZIndex(l, WALL_LAYER);
+            Map.Children.Add(l);
         }
 
         #endregion
