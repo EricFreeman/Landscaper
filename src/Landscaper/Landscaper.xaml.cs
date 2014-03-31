@@ -259,6 +259,8 @@ namespace Landscaper
                         w.X2 = b.LowerX;
                         PlaceWall(new Point(b.UpperX, w.Y1), new Point(oldEnd - TILE_SIZE, w.Y1));
                     }
+
+                    b.UpperX -= TILE_SIZE;
                 }
                 else
                 {
@@ -276,6 +278,8 @@ namespace Landscaper
                         w.Y2 = b.LowerY;
                         PlaceWall(new Point(w.X1, b.UpperY), new Point(w.X1, oldEnd - TILE_SIZE));
                     }
+
+                    b.UpperY -= TILE_SIZE;
                 }
 
                 if (w.X1 - w.X2 == 0 && w.Y1 - w.Y2 == 0)
