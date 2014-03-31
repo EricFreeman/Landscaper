@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace Landscaper
         };
 
         public ObservableCollection<Tile> TileList = new ObservableCollection<Tile>();
+        public List<Wall> WallList = new List<Wall>();
         private Tile _selectedTile;
 
         #endregion
@@ -154,6 +156,31 @@ namespace Landscaper
 
         #endregion
 
+        #region Menu Handlers
+
+        private void OnNew(object sender, RoutedEventArgs e)
+        {
+            Map.Children.Clear();
+            WallList.Clear();
+        }
+
+        private void OnSave(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnOpen(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnExit(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        #endregion
+
         #region Tiles
 
         private void PlaceTile(Point start)
@@ -217,18 +244,28 @@ namespace Landscaper
             if (b.LowerX == b.UpperX) b.UpperY += TILE_SIZE;
             else if (b.LowerY == b.UpperY) b.UpperX += TILE_SIZE;
 
-            var l = new Line
+            var w = new Wall
             {
-                X1 = b.LowerX,
-                Y1 = b.LowerY,
-                X2 = b.UpperX,
-                Y2 = b.UpperY,
-                Stroke = new SolidColorBrush(Colors.Gray),
-                StrokeThickness = 3
+                Line = new Line
+                {
+                    X1 = b.LowerX,
+                    Y1 = b.LowerY,
+                    X2 = b.UpperX,
+                    Y2 = b.UpperY,
+                    Stroke = new SolidColorBrush(Colors.Gray),
+                    StrokeThickness = 3
+                },
             };
 
-            Canvas.SetZIndex(l, WALL_LAYER);
-            Map.Children.Add(l);
+            Canvas.SetZIndex(w.Line, WALL_LAYER);
+            Map.Children.Add(w.Line);
+            WallList.Add(w);
+        }
+
+        public void RemoveWallByLine(Line l)
+        {
+            Map.Children.Remove(l);
+            WallList.Remove(WallList.FirstOrDefault(x => x.Line == l));
         }
 
         //TODO: Future Eric, make this not so duplicated and unreadable
@@ -252,7 +289,7 @@ namespace Landscaper
                     else if (b.LowerX <= w.X2 && b.LowerX > w.X1 && b.UpperX >= w.X2) // covers only right side of wall
                         w.X2 = b.LowerX;
                     else if(b.LowerX <= w.X1 && b.UpperX >= w.X2) // covers entire wall
-                        Map.Children.Remove(w);
+                        RemoveWallByLine(w);
                     else if(b.LowerX > w.X1 && b.UpperX < w.X2) // covers middle of wall
                     {
                         var oldEnd = w.X2;
@@ -271,7 +308,7 @@ namespace Landscaper
                     else if (b.LowerY <= w.Y2 && b.LowerY > w.Y1 && b.UpperY >= w.Y2) // covers only right side of wall
                         w.Y2 = b.LowerY;
                     else if (b.LowerY <= w.Y1 && b.UpperY >= w.Y2) // covers entire wall
-                        Map.Children.Remove(w);
+                        RemoveWallByLine(w);
                     else if (b.LowerY > w.Y1 && b.UpperY < w.Y2) // covers middle of wall
                     {
                         var oldEnd = w.Y2;
@@ -283,7 +320,7 @@ namespace Landscaper
                 }
 
                 if (w.X1 - w.X2 == 0 && w.Y1 - w.Y2 == 0)
-                    Map.Children.Remove(w);
+                        RemoveWallByLine(w);
 
             }
         }
