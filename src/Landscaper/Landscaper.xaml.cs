@@ -172,6 +172,7 @@ namespace Landscaper
         private void OnNew(object sender, RoutedEventArgs e)
         {
             Map.Children.Clear();
+            Map.Children.Add(selectionRectangle);
             WallList.Clear();
             DoorList.Clear();
         }
@@ -274,10 +275,11 @@ namespace Landscaper
             WallList.Add(w);
         }
 
-        public void RemoveWallByLine(Line l)
+        public void RemoveWallOrDoorByLine(Line l)
         {
             Map.Children.Remove(l);
             WallList.Remove(WallList.FirstOrDefault(x => x.Line == l));
+            DoorList.Remove(DoorList.FirstOrDefault(x => x.Line == l));
         }
 
         //TODO: Future Eric, make this not so duplicated and unreadable
@@ -301,7 +303,7 @@ namespace Landscaper
                     else if (b.LowerX <= w.X2 && b.LowerX > w.X1 && b.UpperX >= w.X2) // covers only right side of wall
                         w.X2 = b.LowerX;
                     else if(b.LowerX <= w.X1 && b.UpperX >= w.X2) // covers entire wall
-                        RemoveWallByLine(w);
+                        RemoveWallOrDoorByLine(w);
                     else if(b.LowerX > w.X1 && b.UpperX < w.X2) // covers middle of wall
                     {
                         var oldEnd = w.X2;
@@ -320,7 +322,7 @@ namespace Landscaper
                     else if (b.LowerY <= w.Y2 && b.LowerY > w.Y1 && b.UpperY >= w.Y2) // covers only right side of wall
                         w.Y2 = b.LowerY;
                     else if (b.LowerY <= w.Y1 && b.UpperY >= w.Y2) // covers entire wall
-                        RemoveWallByLine(w);
+                        RemoveWallOrDoorByLine(w);
                     else if (b.LowerY > w.Y1 && b.UpperY < w.Y2) // covers middle of wall
                     {
                         var oldEnd = w.Y2;
@@ -332,7 +334,7 @@ namespace Landscaper
                 }
 
                 if (w.X1 - w.X2 == 0 && w.Y1 - w.Y2 == 0)
-                        RemoveWallByLine(w);
+                        RemoveWallOrDoorByLine(w);
 
             }
         }
