@@ -87,16 +87,18 @@ namespace Landscaper.Helpers
             var level = doc.SelectSingleNode("Level");
 
             // Floor Tiles
+            var rows = level.SelectNodes("Row");
+            var yOffset = rows.Count;
             var x = 0;
             var y = 0;
-            foreach (XmlNode row in level.SelectNodes("Row"))
+            foreach (XmlNode row in rows)
             {
                 foreach (XmlNode column in row.SelectNodes("Column"))
                 {
                     var tile = column.SelectSingleNode("Tile");
 
                     editor.SelectTile(tile.InnerText);
-                    editor.PlaceTile(new Point(x * ts, y * ts));
+                    editor.PlaceTile(new Point(x * ts, (yOffset - y) * ts));
 
                     x++;
                 }
@@ -113,7 +115,9 @@ namespace Landscaper.Helpers
                 var p1 = parts[0].Split(',');
                 var p2 = parts[1].Split(',');
 
-                editor.PlaceWall(new Point(int.Parse(p1[0]) * ts, int.Parse(p1[1]) * ts), new Point(int.Parse(p2[0]) * ts, int.Parse(p2[1]) * ts));
+                editor.PlaceWall(
+                    new Point(int.Parse(p1[0]) * ts, (yOffset - int.Parse(p1[1])) * ts), 
+                    new Point(int.Parse(p2[0]) * ts, (yOffset - int.Parse(p2[1])) * ts));
             }
 
             // Doors
@@ -128,9 +132,9 @@ namespace Landscaper.Helpers
 
                 // when placing doors, you need to put it closer to left or top side of tile it's on or else it will mess up
                 if(drot == 0)
-                    editor.PlaceDoor(new Point(dx * ts + 1, dy * ts));
+                    editor.PlaceDoor(new Point(dx * ts + 1, (yOffset - dy) * ts));
                 if (drot == 90)
-                    editor.PlaceDoor(new Point(dx * ts, dy * ts + 1));
+                    editor.PlaceDoor(new Point(dx * ts, (yOffset - dy) * ts + 1));
             }
         }
     }
