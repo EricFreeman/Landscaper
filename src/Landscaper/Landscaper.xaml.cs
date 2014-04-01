@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
 using Landscaper.Models;
+using Microsoft.Win32;
 
 namespace Landscaper
 {
@@ -19,7 +20,7 @@ namespace Landscaper
     {
         #region Private Properties
 
-        private Tile _selectedTile;
+        private TileChoice _selectedTileChoice;
         private Point startPoint;
         private Tool selectedTool = Tool.Paint;
         private bool isDragging;
@@ -37,7 +38,10 @@ namespace Landscaper
 
         #region Public Properties
 
-        public ObservableCollection<Tile> TileList = new ObservableCollection<Tile>();
+        // This is the choices on the tile tab, not the tiels that make up the map (those are in in TileList)
+        public ObservableCollection<TileChoice> TileChoiceList = new ObservableCollection<TileChoice>();
+
+        public List<Tile> TileList = new List<Tile>(); 
         public List<Wall> WallList = new List<Wall>();
         public List<Door> DoorList = new List<Door>(); 
 
@@ -74,7 +78,7 @@ namespace Landscaper
             var di = new DirectoryInfo("Content/Tiles/");
             foreach (var file in di.GetFiles())
             {
-                TileList.Add(new Tile
+                TileChoiceList.Add(new TileChoice
                 {
                     Name = file.Name.Replace(file.Extension, string.Empty),
                     Image = new Image
@@ -83,8 +87,8 @@ namespace Landscaper
                     }
                 });
             }
-            TilesListBox.ItemsSource = TileList;
-            _selectedTile = TileList.FirstOrDefault();
+            TilesListBox.ItemsSource = TileChoiceList;
+            _selectedTileChoice = TileChoiceList.FirstOrDefault();
         }
 
         #endregion
@@ -162,7 +166,7 @@ namespace Landscaper
 
         private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)
         {
-            _selectedTile = (Tile)((ListBox) sender).SelectedItem;
+            _selectedTileChoice = (TileChoice)((ListBox) sender).SelectedItem;
         }
 
         #endregion
@@ -175,11 +179,16 @@ namespace Landscaper
             Map.Children.Add(selectionRectangle);
             WallList.Clear();
             DoorList.Clear();
+            TileList.Clear();
         }
 
         private void OnSave(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var sfd = new SaveFileDialog();
+            var save = sfd.ShowDialog();
+
+            if(save ?? false)
+                IO.Save(this, sfd.FileName, TILE_SIZE);
         }
 
         private void OnOpen(object sender, RoutedEventArgs e)
@@ -216,30 +225,40 @@ namespace Landscaper
                 .Where(x => x != selectionRectangle)
                 .Where(x => x.WithinBounds(start.ConvertToTilePosition(TILE_SIZE), end.ConvertToTilePosition(TILE_SIZE)))
                 .ToList();
-            
-            for(int i = tiles.Count() - 1; i >= 0; i--)
+
+            for (int i = tiles.Count() - 1; i >= 0; i--)
+            {
                 Map.Children.Remove(tiles[i]);
+                TileList.Remove(TileList.FirstOrDefault(x => x.Rectangle == tiles[i]));
+            }
         }
 
         private void PlaceTilesBetween(Point start, Point end)
         {
             var b = new Bounds(start, end);
-
+            var im = new Image {Width = TILE_SIZE, Height = TILE_SIZE, Source = _selectedTileChoice.Image.Source};
+            
             for (int x = b.LowerX; x <= b.UpperX; x += TILE_SIZE)
                 for (int y = b.LowerY; y <= b.UpperY; y += TILE_SIZE)
                 {
-                    var im = new Image {Width = TILE_SIZE, Height = TILE_SIZE, Source = _selectedTile.Image.Source};
-                    var rec = new Rectangle
-                    {
-                        Width = TILE_SIZE,
-                        Height = TILE_SIZE,
-                        Fill = new ImageBrush(im.Source)
+                    var t = new Tile {
+                        Rectangle = new Rectangle
+                        {
+                            Width = TILE_SIZE,
+                            Height = TILE_SIZE,
+                            Fill = new ImageBrush(im.Source)
+                        },
+                        X = x / TILE_SIZE,
+                        Y = y / TILE_SIZE,
+                        Name = _selectedTileChoice.Name
                     };
 
-                    Canvas.SetLeft(rec, x);
-                    Canvas.SetTop(rec, y);
-                    Canvas.SetZIndex(rec, FLOOR_LAYER);
-                    Map.Children.Add(rec);
+                    Canvas.SetLeft(t.Rectangle, x);
+                    Canvas.SetTop(t.Rectangle, y);
+                    Canvas.SetZIndex(t.Rectangle, FLOOR_LAYER);
+
+                    Map.Children.Add(t.Rectangle);
+                    TileList.Add(t);
                 }
         }
 
@@ -365,12 +384,12 @@ namespace Landscaper
 
             if (left < top) // they were closer to left side of tile
             {
-                d.Rotation = 0;
+                d.Rotation = 90;
                 d.Line.Y2 += TILE_SIZE;
             }
             else // else they were closer to top, or were equal distances at which point I'm putting it here because the user is an indecisive bastard
             {
-                d.Rotation = 90;
+                d.Rotation = 0;
                 d.Line.X2 += TILE_SIZE;
             }
 

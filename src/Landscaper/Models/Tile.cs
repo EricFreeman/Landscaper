@@ -1,10 +1,12 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows.Shapes;
 
 namespace Landscaper.Models
 {
     public class Tile
     {
-        public string Name { get; set; }
-        public Image Image { get; set; }
+        public Rectangle Rectangle;
+        public int X;
+        public int Y;
+        public string Name;
     }
 }

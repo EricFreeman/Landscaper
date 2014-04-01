@@ -54,5 +54,10 @@ namespace Landscaper.Helpers
 
             return b;
         }
+
+        public static string ToFormat(this string s, params object[] p)
+        {
+            return string.Format(s, p);
+        }
     }
 }
