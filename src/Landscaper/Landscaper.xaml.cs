@@ -175,6 +175,11 @@ namespace Landscaper
 
         private void OnNew(object sender, RoutedEventArgs e)
         {
+            Clear();
+        }
+
+        public void Clear()
+        {
             Map.Children.Clear();
             Map.Children.Add(selectionRectangle);
             WallList.Clear();
@@ -193,7 +198,11 @@ namespace Landscaper
 
         private void OnOpen(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var ofd = new OpenFileDialog();
+            var open = ofd.ShowDialog();
+
+            if(open ?? false)
+                IO.Load(this, ofd.FileName, TILE_SIZE);
         }
 
         private void OnExit(object sender, RoutedEventArgs e)
@@ -205,7 +214,7 @@ namespace Landscaper
 
         #region Tiles
 
-        private void PlaceTile(Point start)
+        public void PlaceTile(Point start)
         {
             PlaceTile(start, start);
         }
@@ -362,7 +371,7 @@ namespace Landscaper
 
         #region Doors
 
-        private void PlaceDoor(Point start)
+        public void PlaceDoor(Point start)
         {
             //figure out if they meant to put door on left or top of tile
             var left = start.X % TILE_SIZE;
@@ -396,6 +405,15 @@ namespace Landscaper
             Canvas.SetZIndex(d.Line, DOOR_LAYER);
             Map.Children.Add(d.Line);
             DoorList.Add(d);
+        }
+
+        #endregion
+
+        #region Shortcuts
+
+        public void SelectTile(string Name)
+        {
+            _selectedTileChoice = TileChoiceList.FirstOrDefault(x => x.Name == Name);
         }
 
         #endregion

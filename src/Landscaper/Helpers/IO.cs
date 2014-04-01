@@ -1,8 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Shapes;
+using System.Windows.Media;
 using System.Xml;
 
 namespace Landscaper.Helpers
@@ -76,6 +76,62 @@ namespace Landscaper.Helpers
 
             file.LoadXml(f);
             file.Save(fileLoc);
+        }
+
+        public static void Load(MainWindow editor, string fileLoc, int ts)
+        {
+            editor.Clear(); // clean up anything the user might have been working on before
+
+            var doc = new XmlDocument();
+            doc.Load(fileLoc);
+            var level = doc.SelectSingleNode("Level");
+
+            // Floor Tiles
+            var x = 0;
+            var y = 0;
+            foreach (XmlNode row in level.SelectNodes("Row"))
+            {
+                foreach (XmlNode column in row.SelectNodes("Column"))
+                {
+                    var tile = column.SelectSingleNode("Tile");
+
+                    editor.SelectTile(tile.InnerText);
+                    editor.PlaceTile(new Point(x * ts, y * ts));
+
+                    x++;
+                }
+                y++;
+                x = 0;
+            }
+
+            // Walls
+            var walls = level.SelectSingleNode("Walls");
+            foreach (XmlNode wall in walls.SelectNodes("Wall"))
+            {
+                // wall pattern is: x,y x1,y2
+                string[] parts = wall.InnerText.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+                var p1 = parts[0].Split(',');
+                var p2 = parts[1].Split(',');
+
+                editor.PlaceWall(new Point(int.Parse(p1[0]) * ts, int.Parse(p1[1]) * ts), new Point(int.Parse(p2[0]) * ts, int.Parse(p2[1]) * ts));
+            }
+
+            // Doors
+            var doors = level.SelectSingleNode("Doors");
+            foreach (XmlNode door in doors.SelectNodes("Door"))
+            {
+                // door is stored as x,y,rotation
+                var parts = door.InnerText.Split(',');
+                var dx = int.Parse(parts[0]);
+                var dy = int.Parse(parts[1]);
+                var drot = int.Parse(parts[2]);
+
+                // when placing doors, you need to put it closer to left or top side of tile it's on or else it will mess up
+                if(drot == 0)
+                    editor.PlaceDoor(new Point(dx * ts + 1, dy * ts));
+                if (drot == 90)
+                    editor.PlaceDoor(new Point(dx * ts, dy * ts + 1));
+            }
         }
     }
 }
