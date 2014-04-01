@@ -119,7 +119,7 @@ namespace Landscaper.Helpers
 
                 editor.PlaceWall(
                     new Point(int.Parse(p1[0]) * ts, (yOffset - int.Parse(p1[1]) + (isHor ? 1 : 0)) * ts), 
-                    new Point(int.Parse(p2[0]) * ts, (yOffset - int.Parse(p2[1]) + (isHor ? 1 : 0)) * ts));
+                    new Point((int.Parse(p2[0]) - (isHor ? 1 : 0)) * ts, (yOffset - int.Parse(p2[1]) + (isHor ? 1 : -1)) * ts));
             }
 
             // Doors
