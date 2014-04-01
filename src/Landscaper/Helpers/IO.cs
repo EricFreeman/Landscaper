@@ -88,7 +88,7 @@ namespace Landscaper.Helpers
 
             // Floor Tiles
             var rows = level.SelectNodes("Row");
-            var yOffset = rows.Count;
+            var yOffset = rows.Count - 1;
             var x = 0;
             var y = 0;
             foreach (XmlNode row in rows)
@@ -115,9 +115,11 @@ namespace Landscaper.Helpers
                 var p1 = parts[0].Split(',');
                 var p2 = parts[1].Split(',');
 
+                var isHor = p1[1] == p2[1];
+
                 editor.PlaceWall(
-                    new Point(int.Parse(p1[0]) * ts, (yOffset - int.Parse(p1[1])) * ts), 
-                    new Point(int.Parse(p2[0]) * ts, (yOffset - int.Parse(p2[1])) * ts));
+                    new Point(int.Parse(p1[0]) * ts, (yOffset - int.Parse(p1[1]) + (isHor ? 1 : 0)) * ts), 
+                    new Point(int.Parse(p2[0]) * ts, (yOffset - int.Parse(p2[1]) + (isHor ? 1 : 0)) * ts));
             }
 
             // Doors
@@ -132,7 +134,7 @@ namespace Landscaper.Helpers
 
                 // when placing doors, you need to put it closer to left or top side of tile it's on or else it will mess up
                 if(drot == 0)
-                    editor.PlaceDoor(new Point(dx * ts + 1, (yOffset - dy) * ts));
+                    editor.PlaceDoor(new Point(dx * ts + 1, (yOffset - dy + 1) * ts));
                 if (drot == 90)
                     editor.PlaceDoor(new Point(dx * ts, (yOffset - dy) * ts + 1));
             }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using Landscaper.Models;
@@ -58,6 +59,16 @@ namespace Landscaper.Helpers
         public static string ToFormat(this string s, params object[] p)
         {
             return string.Format(s, p);
+        }
+
+        public static bool IsHorizontal(this Line l)
+        {
+            return Math.Abs(l.Y1 - l.Y2) < .1;
+        }
+
+        public static bool IsVertical(this Line l)
+        {
+            return Math.Abs(l.X1 - l.X2) < .1;
         }
     }
 }

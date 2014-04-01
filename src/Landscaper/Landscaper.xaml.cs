@@ -95,8 +95,11 @@ namespace Landscaper
 
         #region Mouse Handlers
 
+        public bool WasDown = false;
+
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            WasDown = true;
             startPoint = e.GetPosition(Map);
 
             switch (selectedTool)
@@ -114,6 +117,11 @@ namespace Landscaper
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (!WasDown)
+                return;
+
+            WasDown = false;
+
             var currentPos = e.GetPosition(Map);
 
             switch (selectedTool)
@@ -192,6 +200,8 @@ namespace Landscaper
             var sfd = new SaveFileDialog();
             var save = sfd.ShowDialog();
 
+            isDragging = false;
+
             if(save ?? false)
                 IO.Save(this, sfd.FileName, TILE_SIZE);
         }
@@ -200,6 +210,8 @@ namespace Landscaper
         {
             var ofd = new OpenFileDialog();
             var open = ofd.ShowDialog();
+
+            isDragging = false;
 
             if(open ?? false)
                 IO.Load(this, ofd.FileName, TILE_SIZE);
