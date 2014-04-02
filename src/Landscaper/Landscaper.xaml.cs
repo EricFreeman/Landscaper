@@ -115,10 +115,6 @@ namespace Landscaper
             isDragging = true;
         }
 
-        public int MapOffsetX = 0;
-        public int MapOffsetY = 0;
-        public double MapZoom = 1;
-
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!WasDown)
@@ -133,12 +129,12 @@ namespace Landscaper
             switch (selectedTool)
             {
                 case Tool.Move:
-                    MapOffsetX += (int)(startPoint.ConvertToTilePosition(TILE_SIZE).X -
+                    var x = (int)(startPoint.ConvertToTilePosition(TILE_SIZE).X -
                                   currentPos.ConvertToTilePosition(TILE_SIZE).X);
-                    MapOffsetY += (int)(startPoint.ConvertToTilePosition(TILE_SIZE).Y - 
+                    var y = (int)(startPoint.ConvertToTilePosition(TILE_SIZE).Y - 
                                   currentPos.ConvertToTilePosition(TILE_SIZE).Y);
 
-                    Map.RenderTransform = new TranslateTransform(MapOffsetX, MapOffsetY);
+                    TranslateMap(x, y);
                            
                     break;
                 case Tool.Paint:
@@ -157,6 +153,31 @@ namespace Landscaper
             isDragging = false;
             selectionRectangle.Width = TILE_SIZE;
             selectionRectangle.Height = TILE_SIZE;
+        }
+        private void TranslateMap(int x, int y)
+        {            foreach (var child in Map.Children.OfType<Shape>())
+            {
+                if (child is Rectangle)
+                {
+                    Canvas.SetLeft(child, Canvas.GetLeft(child) + x);
+                    Canvas.SetTop(child, Canvas.GetTop(child) + y);
+
+                    var t = TileList.FirstOrDefault(z => z.Rectangle == child);
+                    if (t != null)
+                    {
+                        t.X += x / TILE_SIZE;
+                        t.Y += y / TILE_SIZE;
+                    }
+                }
+                else if (child is Line)
+                {
+                    var c = child as Line;
+                    c.X1 += x;
+                    c.X2 += x;
+                    c.Y1 += y;
+                    c.Y2 += y;
+                }
+            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
