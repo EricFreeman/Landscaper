@@ -47,6 +47,11 @@
                 <TabItem Header="Tools">
                     <TabPanel>
                         <StackPanel Width="144">
+                            <RadioButton Name="Move"
+                                         PreviewMouseUp="OnToolbarSelect"
+                                         Style="{StaticResource {x:Type ToggleButton}}">
+                                <Label>Move</Label>
+                            </RadioButton>
                             <RadioButton Name="Selection"
                                          PreviewMouseUp="OnToolbarSelect"
                                          Style="{StaticResource {x:Type ToggleButton}}">

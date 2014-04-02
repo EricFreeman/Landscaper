@@ -115,6 +115,10 @@ namespace Landscaper
             isDragging = true;
         }
 
+        public int MapOffsetX = 0;
+        public int MapOffsetY = 0;
+        public double MapZoom = 1;
+
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!WasDown)
@@ -128,6 +132,15 @@ namespace Landscaper
 
             switch (selectedTool)
             {
+                case Tool.Move:
+                    MapOffsetX += (int)(startPoint.ConvertToTilePosition(TILE_SIZE).X -
+                                  currentPos.ConvertToTilePosition(TILE_SIZE).X);
+                    MapOffsetY += (int)(startPoint.ConvertToTilePosition(TILE_SIZE).Y - 
+                                  currentPos.ConvertToTilePosition(TILE_SIZE).Y);
+
+                    Map.RenderTransform = new TranslateTransform(MapOffsetX, MapOffsetY);
+                            
+                    break;
                 case Tool.Paint:
                     if (leftClick) PlaceTile(startPoint, currentPos);
                     else RemoveExistingTilesBetween(startPoint, currentPos);

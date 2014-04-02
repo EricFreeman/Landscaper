@@ -2,6 +2,7 @@
 {
     public enum Tool
     {
+        Move,
         Selection,
         Draw,
         Paint,
