@@ -105,6 +105,13 @@
                          PreviewMouseUp="OnToolbarSelect">
                 Door
             </RadioButton>
+            <Slider Name="ZoomSlider"
+                    Maximum="4" 
+                    Minimum=".1" 
+                    Value="1" 
+                    ValueChanged="ZoomSlider_OnValueChanged"
+                    MouseDoubleClick="ZoomSlider_OnMouseDoubleClick"
+                    Width="300" />
         </ToolBar>
     </Grid>
 </Window>

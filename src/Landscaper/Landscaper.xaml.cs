@@ -154,6 +154,7 @@ namespace Landscaper
             selectionRectangle.Width = TILE_SIZE;
             selectionRectangle.Height = TILE_SIZE;
         }
+
         private void TranslateMap(int x, int y)
         {            foreach (var child in Map.Children.OfType<Shape>())
             {
@@ -212,6 +213,16 @@ namespace Landscaper
         private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)
         {
             _selectedTileChoice = (TileChoice)((ListBox) sender).SelectedItem;
+        }
+
+        private void ZoomSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Map.RenderTransform = new ScaleTransform(e.NewValue, e.NewValue);
+        }
+
+        private void ZoomSlider_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ZoomSlider.Value = 1;
         }
 
         #endregion
