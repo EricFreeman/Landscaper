@@ -124,10 +124,13 @@ namespace Landscaper
 
             var currentPos = e.GetPosition(Map);
 
+            var leftClick = e.ChangedButton == MouseButton.Left;
+
             switch (selectedTool)
             {
                 case Tool.Paint:
-                    PlaceTile(startPoint, currentPos);
+                    if (leftClick) PlaceTile(startPoint, currentPos);
+                    else RemoveExistingTilesBetween(startPoint, currentPos);
                     break;
                 case Tool.Remove:
                     RemoveExistingTilesBetween(startPoint, currentPos);
