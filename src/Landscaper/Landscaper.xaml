@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -31,8 +32,8 @@
         
         <ScrollViewer Grid.Row="1"
                       Grid.Column="0"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Visible">
             <Canvas Name="Map"
                     PreviewMouseDown="OnMouseDown" 
                     PreviewMouseUp="OnMouseUp"
@@ -44,48 +45,6 @@
                     Grid.Column="1" 
                     Name="Toolbar">
             <TabControl>
-                <TabItem Header="Tools">
-                    <TabPanel>
-                        <StackPanel Width="144">
-                            <RadioButton Name="Move"
-                                         PreviewMouseUp="OnToolbarSelect"
-                                         Style="{StaticResource {x:Type ToggleButton}}">
-                                <Label>Move</Label>
-                            </RadioButton>
-                            <RadioButton Name="Selection"
-                                         PreviewMouseUp="OnToolbarSelect"
-                                         Style="{StaticResource {x:Type ToggleButton}}">
-                                <Label>Selection</Label>
-                            </RadioButton>
-                            <RadioButton Name="Draw"
-                                         PreviewMouseUp="OnToolbarSelect"
-                                         Style="{StaticResource {x:Type ToggleButton}}">
-                                <Label>Draw</Label>
-                            </RadioButton>
-                            <RadioButton Name="Paint"
-                                         PreviewMouseUp="OnToolbarSelect"
-                                         Style="{StaticResource {x:Type ToggleButton}}"
-                                         IsChecked="True">
-                                <Label>Paint</Label>
-                            </RadioButton>
-                            <RadioButton Name="Remove"
-                                          PreviewMouseUp="OnToolbarSelect"
-                                          Style="{StaticResource {x:Type ToggleButton}}">
-                                <Label>Remove</Label>
-                            </RadioButton>
-                            <RadioButton Name="Wall"
-                                          PreviewMouseUp="OnToolbarSelect"
-                                          Style="{StaticResource {x:Type ToggleButton}}">
-                                <Label>Wall</Label>
-                            </RadioButton>
-                            <RadioButton Name="Door"
-                                          PreviewMouseUp="OnToolbarSelect"
-                                          Style="{StaticResource {x:Type ToggleButton}}">
-                                <Label>Door</Label>
-                            </RadioButton>
-                        </StackPanel>
-                    </TabPanel>
-                </TabItem>
                 <TabItem Header="Tiles">
                     
                     <TabPanel>
@@ -113,5 +72,39 @@
                 </TabItem>
             </TabControl>
         </StackPanel>
+
+        <ToolBar Grid.Row="2"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2">
+            <RadioButton Name="Move"
+                         PreviewMouseUp="OnToolbarSelect">
+                Move
+            </RadioButton>
+            <RadioButton Name="Selection"
+                         PreviewMouseUp="OnToolbarSelect">
+                Selection
+            </RadioButton>
+            <RadioButton Name="Draw"
+                         PreviewMouseUp="OnToolbarSelect">
+                Draw
+            </RadioButton>
+            <RadioButton Name="Paint"
+                         PreviewMouseUp="OnToolbarSelect"
+                         IsChecked="True">
+                Paint
+            </RadioButton>
+            <RadioButton Name="Remove"
+                         PreviewMouseUp="OnToolbarSelect">
+                Remove
+            </RadioButton>
+            <RadioButton Name="Wall"
+                         PreviewMouseUp="OnToolbarSelect">
+                Wall
+            </RadioButton>
+            <RadioButton Name="Door"
+                         PreviewMouseUp="OnToolbarSelect">
+                Door
+            </RadioButton>
+        </ToolBar>
     </Grid>
 </Window>

@@ -139,7 +139,7 @@ namespace Landscaper
                                   currentPos.ConvertToTilePosition(TILE_SIZE).Y);
 
                     Map.RenderTransform = new TranslateTransform(MapOffsetX, MapOffsetY);
-                            
+                           
                     break;
                 case Tool.Paint:
                     if (leftClick) PlaceTile(startPoint, currentPos);
