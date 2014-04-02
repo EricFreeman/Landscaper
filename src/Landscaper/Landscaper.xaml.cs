@@ -217,7 +217,7 @@ namespace Landscaper
 
         private void ZoomSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Map.RenderTransform = new ScaleTransform(e.NewValue, e.NewValue);
+            Map.LayoutTransform = new ScaleTransform(e.NewValue, e.NewValue);
         }
 
         private void ZoomSlider_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
