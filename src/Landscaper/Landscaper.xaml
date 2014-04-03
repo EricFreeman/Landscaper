@@ -4,114 +4,126 @@
         xmlns:helpers="clr-namespace:Landscaper.Helpers"
         Title="Landscaper"
         WindowState="Maximized">
-  
+
   <Window.Resources>
     <helpers:ImageToSourceConverter x:Key="ImageToSourceConverter"/>
   </Window.Resources>
-  
+
   <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="150" />
-        </Grid.ColumnDefinitions>
-        
-        <Menu Grid.Row="0"
-              Grid.ColumnSpan="2">
-            <MenuItem Header="File">
-                <MenuItem Header="New" Click="OnNew" />
-                <MenuItem Header="Save" Click="OnSave" />
-                <MenuItem Header="Open" Click="OnOpen" />
-                <MenuItem Header="Exit" Click="OnExit" />
-            </MenuItem>
-        </Menu>
-        
-        <ScrollViewer Grid.Row="1"
-                      Grid.Column="0"
-                      VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Visible">
-            <Canvas Name="Map"
-                    PreviewMouseDown="OnMouseDown" 
-                    PreviewMouseUp="OnMouseUp"
-                    MouseMove="OnMouseMove"
-                    Background="Fuchsia" />
-        </ScrollViewer>
-        
-        <StackPanel Grid.Row="1"
-                    Grid.Column="1" 
-                    Name="Toolbar">
-            <TabControl>
-                <TabItem Header="Tiles">
-                    
-                    <TabPanel>
-                      
-                    <ListBox x:Name="TilesListBox" PreviewMouseUp="SelectNewTileBrush">
-                      <ListBox.ItemTemplate>
-                        <DataTemplate>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="150" />
+    </Grid.ColumnDefinitions>
 
-                              <WrapPanel>
-                                <Image Source="{Binding Path=Image, Converter={StaticResource ImageToSourceConverter}}" />
-                                <Label Content="{Binding Path=Name}" />
-                              </WrapPanel>
+    <Menu Grid.Row="0"
+          Grid.ColumnSpan="2">
+      <MenuItem Header="File">
+        <MenuItem Header="New" Click="OnNew" />
+        <MenuItem Header="Save" Click="OnSave" />
+        <MenuItem Header="Open" Click="OnOpen" />
+        <MenuItem Header="Exit" Click="OnExit" />
+      </MenuItem>
+    </Menu>
 
-                        </DataTemplate>
-                      </ListBox.ItemTemplate>
-                    </ListBox>
-                      
-                    </TabPanel>
-                  
-                </TabItem>
-                <TabItem Header="Items">
-                    <TabPanel>
-                        <Label>Put items here</Label>
-                    </TabPanel>
-                </TabItem>
-            </TabControl>
-        </StackPanel>
-
-        <ToolBar Grid.Row="2"
+    <ToolBarTray Grid.Row="1"
                  Grid.Column="0"
-                 Grid.ColumnSpan="2">
-            <RadioButton Name="Move"
-                         PreviewMouseUp="OnToolbarSelect">
-                Move
-            </RadioButton>
-            <RadioButton Name="Selection"
-                         PreviewMouseUp="OnToolbarSelect">
-                Selection
-            </RadioButton>
-            <RadioButton Name="Draw"
-                         PreviewMouseUp="OnToolbarSelect">
-                Draw
-            </RadioButton>
-            <RadioButton Name="Paint"
-                         PreviewMouseUp="OnToolbarSelect"
-                         IsChecked="True">
-                Paint
-            </RadioButton>
-            <RadioButton Name="Remove"
-                         PreviewMouseUp="OnToolbarSelect">
-                Remove
-            </RadioButton>
-            <RadioButton Name="Wall"
-                         PreviewMouseUp="OnToolbarSelect">
-                Wall
-            </RadioButton>
-            <RadioButton Name="Door"
-                         PreviewMouseUp="OnToolbarSelect">
-                Door
-            </RadioButton>
-            <Slider Name="ZoomSlider"
-                    Maximum="4" 
-                    Minimum=".1" 
-                    Value="1" 
-                    ValueChanged="ZoomSlider_OnValueChanged"
-                    MouseDoubleClick="ZoomSlider_OnMouseDoubleClick"
-                    Width="300" />
-        </ToolBar>
-    </Grid>
+                 Grid.ColumnSpan="2"
+                 Background="White">
+      <ToolBar Background="White">
+        <RadioButton Name="Move"
+                     PreviewMouseUp="OnToolbarSelect">
+          Move
+        </RadioButton>
+        <RadioButton Name="Selection"
+                     PreviewMouseUp="OnToolbarSelect">
+          Selection
+        </RadioButton>
+        <RadioButton Name="Draw"
+                     PreviewMouseUp="OnToolbarSelect">
+          Draw
+        </RadioButton>
+        <RadioButton Name="Paint"
+                     PreviewMouseUp="OnToolbarSelect"
+                     IsChecked="True">
+          Paint
+        </RadioButton>
+        <RadioButton Name="Remove"
+                     PreviewMouseUp="OnToolbarSelect">
+          Remove
+        </RadioButton>
+        <RadioButton Name="Wall"
+                     PreviewMouseUp="OnToolbarSelect">
+          Wall
+        </RadioButton>
+        <RadioButton Name="Door"
+                     PreviewMouseUp="OnToolbarSelect">
+          Door
+        </RadioButton>
+      </ToolBar>
+
+      <ToolBar Background="White">
+        <TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value}"
+                   TextAlignment="Right"
+                   Width="30"
+                   Padding="5,3,12,0" />
+        <Slider Name="ZoomSlider"
+                Maximum="4"
+                Minimum=".25"
+                Value="1"
+                ValueChanged="ZoomSlider_OnValueChanged"
+                MouseDoubleClick="ZoomSlider_OnMouseDoubleClick"
+                Width="300"
+                IsSnapToTickEnabled="True"
+                TickFrequency=".25"/>
+      </ToolBar>
+    </ToolBarTray>
+
+    <ScrollViewer Grid.Row="2"
+                      Grid.Column="0">
+      <Canvas Name="Map"
+              PreviewMouseDown="OnMouseDown"
+              PreviewMouseUp="OnMouseUp"
+              MouseMove="OnMouseMove"
+              Background="Fuchsia"
+              MouseWheel="OnMouseWheel" />
+    </ScrollViewer>
+
+    <StackPanel Grid.Row="2"
+                Grid.Column="1"
+                Name="Toolbar">
+      <TabControl>
+        <TabItem Header="Tiles">
+
+          <TabPanel>
+
+            <ListBox x:Name="TilesListBox" PreviewMouseUp="SelectNewTileBrush">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                  <WrapPanel>
+                    <Image Source="{Binding Path=Image, Converter={StaticResource ImageToSourceConverter}}" />
+                    <Label Content="{Binding Path=Name}" />
+                  </WrapPanel>
+
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+
+          </TabPanel>
+
+        </TabItem>
+        <TabItem Header="Items">
+          <TabPanel>
+            <Label>Put items here</Label>
+          </TabPanel>
+        </TabItem>
+      </TabControl>
+    </StackPanel>
+
+  </Grid>
 </Window>

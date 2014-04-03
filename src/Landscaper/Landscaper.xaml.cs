@@ -200,6 +200,11 @@ namespace Landscaper
             }
         }
 
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ZoomSlider.Value += e.Delta/480.0;
+        }
+
         #endregion
 
         #region Toolbar
@@ -217,7 +222,8 @@ namespace Landscaper
 
         private void ZoomSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Map.LayoutTransform = new ScaleTransform(e.NewValue, e.NewValue);
+            if(Map != null) // because we like firing events while loading still, right wpf?
+                Map.LayoutTransform = new ScaleTransform(e.NewValue, e.NewValue);
         }
 
         private void ZoomSlider_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
