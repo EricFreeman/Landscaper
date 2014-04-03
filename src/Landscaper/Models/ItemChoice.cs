@@ -2,7 +2,7 @@
 
 namespace Landscaper.Models
 {
-    public class TileChoice
+    public class ItemChoice
     {
         public string Name { get; set; }
         public Image Image { get; set; }

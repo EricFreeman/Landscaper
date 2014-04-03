@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Xml;
+using Landscaper.Models;
 
 namespace Landscaper.Helpers
 {
@@ -135,6 +140,22 @@ namespace Landscaper.Helpers
                     editor.PlaceDoor(new Point(dx * ts + 1, (yOffset - dy + 1) * ts));
                 if (drot == 90)
                     editor.PlaceDoor(new Point(dx * ts, (yOffset - dy) * ts + 1));
+            }
+        }
+
+        public static void LoadImagesFromDirectory(string dir, ObservableCollection<ItemChoice> list)
+        {
+            var di = new DirectoryInfo(dir);
+            foreach (var file in di.GetFiles())
+            {
+                list.Add(new ItemChoice
+                {
+                    Name = file.Name.Replace(file.Extension, string.Empty),
+                    Image = new Image
+                    {
+                        Source = new BitmapImage(new Uri(file.FullName))
+                    }
+                });
             }
         }
     }

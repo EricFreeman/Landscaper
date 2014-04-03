@@ -119,7 +119,20 @@
         </TabItem>
         <TabItem Header="Items">
           <TabPanel>
-            <Label>Put items here</Label>
+
+            <ListBox x:Name="ItemsListBox" PreviewMouseUp="SelectNewTileBrush">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                  <WrapPanel>
+                    <Image Source="{Binding Path=Image, Converter={StaticResource ImageToSourceConverter}}" />
+                    <Label Content="{Binding Path=Name}" />
+                  </WrapPanel>
+
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+              
           </TabPanel>
         </TabItem>
       </TabControl>

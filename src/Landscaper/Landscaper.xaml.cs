@@ -20,7 +20,8 @@ namespace Landscaper
     {
         #region Private Properties
 
-        private TileChoice _selectedTileChoice;
+        private ItemChoice _selectedTileChoice;
+        private ItemChoice _selectedItemChoice;
         private Point startPoint;
         private Tool selectedTool = Tool.Paint;
         private bool isDragging;
@@ -38,12 +39,14 @@ namespace Landscaper
 
         #region Public Properties
 
-        // This is the choices on the tile tab, not the tiels that make up the map (those are in in TileList)
-        public ObservableCollection<TileChoice> TileChoiceList = new ObservableCollection<TileChoice>();
+        // This is the choices on the tile tab, not the tiles that make up the map (those are in in TileList)
+        public ObservableCollection<ItemChoice> TileChoiceList = new ObservableCollection<ItemChoice>();
+        public ObservableCollection<ItemChoice> ItemChoiceList = new ObservableCollection<ItemChoice>();
 
         public List<Tile> TileList = new List<Tile>(); 
         public List<Wall> WallList = new List<Wall>();
         public List<Door> DoorList = new List<Door>(); 
+        public List<Item> ItemList = new List<Item>(); 
 
 
         #endregion
@@ -71,24 +74,21 @@ namespace Landscaper
             Canvas.SetZIndex(selectionRectangle, SELECTION_RECTANGLE_LAYER);
             Map.Children.Add(selectionRectangle);
             LoadTiles();
+            LoadItems();
         }
 
         private void LoadTiles()
         {
-            var di = new DirectoryInfo("Content/Tiles/");
-            foreach (var file in di.GetFiles())
-            {
-                TileChoiceList.Add(new TileChoice
-                {
-                    Name = file.Name.Replace(file.Extension, string.Empty),
-                    Image = new Image
-                    {
-                        Source = new BitmapImage(new Uri(file.FullName))
-                    }
-                });
-            }
+            IO.LoadImagesFromDirectory("Content/Tiles", TileChoiceList);
             TilesListBox.ItemsSource = TileChoiceList;
             _selectedTileChoice = TileChoiceList.FirstOrDefault();
+        }
+
+        private void LoadItems()
+        {
+            IO.LoadImagesFromDirectory("Content/Items", ItemChoiceList);
+            ItemsListBox.ItemsSource = ItemChoiceList;
+            _selectedItemChoice = ItemChoiceList.FirstOrDefault();
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace Landscaper
 
         private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)
         {
-            _selectedTileChoice = (TileChoice)((ListBox) sender).SelectedItem;
+            _selectedTileChoice = (ItemChoice)((ListBox) sender).SelectedItem;
         }
 
         private void ZoomSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
