@@ -5,8 +5,8 @@ namespace Landscaper.Models
     public class Item
     {
         public Rectangle Rectangle;
-        public int X;
-        public int Y;
+        public float X;
+        public float Y;
         public float Scale;
         public float Rotation;
         public string Name;

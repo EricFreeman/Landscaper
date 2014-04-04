@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
 using Landscaper.Models;
@@ -56,12 +54,14 @@ namespace Landscaper
         private const int TILE_SIZE = 32;
 
         private const int FLOOR_LAYER = 0;
-        private const int WALL_LAYER = 1;
-        private const int ITEM_FLOOR_LAYER = 2;
-        private const int PEOPLE_LAYER = 3;
-        private const int DOOR_LAYER = 4;
-        private const int ITEMS_TOP_LAYER = 5;
-        private const int SELECTION_RECTANGLE_LAYER = 6;
+        private const int ITEM_LOWER_FLOOR_LAYER = 1;
+        private const int ITEM_MID_FLOOR_LAYER = 2;
+        private const int ITEM_UPPER_FLOOR_LAYER = 3;
+        private const int WALL_LAYER = 4;
+        private const int PEOPLE_LAYER = 5;
+        private const int DOOR_LAYER = 6;
+        private const int ITEMS_TOP_LAYER = 7;
+        private const int SELECTION_RECTANGLE_LAYER = 8;
 
         #endregion
 
@@ -104,8 +104,8 @@ namespace Landscaper
 
             switch (selectedTool)
             {
-                case Tool.Draw:
-                    PlaceTile(startPoint);
+                case Tool.Item:
+                    PlaceItem(startPoint);
                     return;
                 case Tool.Door:
                     PlaceDoor(startPoint);
@@ -220,6 +220,11 @@ namespace Landscaper
             _selectedTileChoice = (ItemChoice)((ListBox) sender).SelectedItem;
         }
 
+        private void SelectNewItemBrush(object sender, MouseButtonEventArgs e)
+        {
+            _selectedItemChoice = (ItemChoice)((ListBox)sender).SelectedItem;
+        }
+
         private void ZoomSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if(Map != null) // because we like firing events while loading still, right wpf?
@@ -247,6 +252,7 @@ namespace Landscaper
             WallList.Clear();
             DoorList.Clear();
             TileList.Clear();
+            ItemList.Clear();
         }
 
         private void OnSave(object sender, RoutedEventArgs e)
@@ -335,6 +341,40 @@ namespace Landscaper
                     Map.Children.Add(t.Rectangle);
                     TileList.Add(t);
                 }
+        }
+
+        #endregion
+
+        #region Items
+
+        private void PlaceItem(Point start)
+        {
+            var im = new Image
+            {
+                Width = _selectedItemChoice.Image.Source.Width,
+                Height = _selectedItemChoice.Image.Source.Height,
+                Source = _selectedItemChoice.Image.Source,
+            };
+
+            var t = new Item
+            {
+                Rectangle = new Rectangle
+                {
+                    Width = im.Width,
+                    Height = im.Height,
+                    Fill = new ImageBrush(im.Source)
+                },
+                X = (float)start.X,
+                Y = (float)start.Y,
+                Name = _selectedTileChoice.Name
+            };
+
+            Canvas.SetLeft(t.Rectangle, t.X - im.Width / 2);
+            Canvas.SetTop(t.Rectangle, t.Y - im.Height / 2);
+            Canvas.SetZIndex(t.Rectangle, ITEM_MID_FLOOR_LAYER);
+
+            Map.Children.Add(t.Rectangle);
+            ItemList.Add(t);
         }
 
         #endregion

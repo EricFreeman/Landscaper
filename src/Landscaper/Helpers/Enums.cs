@@ -4,7 +4,7 @@
     {
         Move,
         Selection,
-        Draw,
+        Item,
         Paint,
         Remove,
         Wall,

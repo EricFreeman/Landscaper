@@ -43,9 +43,9 @@
                      PreviewMouseUp="OnToolbarSelect">
           Selection
         </RadioButton>
-        <RadioButton Name="Draw"
+        <RadioButton Name="Item"
                      PreviewMouseUp="OnToolbarSelect">
-          Draw
+          Item
         </RadioButton>
         <RadioButton Name="Paint"
                      PreviewMouseUp="OnToolbarSelect"
@@ -120,7 +120,7 @@
         <TabItem Header="Items">
           <TabPanel>
 
-            <ListBox x:Name="ItemsListBox" PreviewMouseUp="SelectNewTileBrush">
+            <ListBox x:Name="ItemsListBox" PreviewMouseUp="SelectNewItemBrush">
               <ListBox.ItemTemplate>
                 <DataTemplate>
 
