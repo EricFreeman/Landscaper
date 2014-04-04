@@ -136,6 +136,25 @@
           </TabPanel>
         </TabItem>
       </TabControl>
+
+      <StackPanel DataContext="{Binding EditingItem}"
+                  Name="ItemEditor"
+                  IsEnabled="False">
+        
+        <Label>X:</Label>
+        <TextBox Name="EditX"
+                 TextChanged="UpdateItemEditor" />
+
+        <Label>Y:</Label>
+        <TextBox Name="EditY"
+                 TextChanged="UpdateItemEditor"/>
+
+        <Label>Rotation:</Label>
+        <TextBox Name="EditRotation"
+                 TextChanged="UpdateItemEditor"/>
+        
+      </StackPanel>
+      
     </StackPanel>
 
   </Grid>

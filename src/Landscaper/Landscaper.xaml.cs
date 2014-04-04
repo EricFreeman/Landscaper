@@ -104,6 +104,9 @@ namespace Landscaper
 
             switch (selectedTool)
             {
+                case Tool.Selection:
+                    SelectItem(startPoint);
+                    return;
                 case Tool.Item:
                     PlaceItem(startPoint);
                     return;
@@ -156,7 +159,10 @@ namespace Landscaper
         }
 
         private void TranslateMap(int x, int y)
-        {            foreach (var child in Map.Children.OfType<Shape>())
+        {
+            DeselectItem();
+
+            foreach (var child in Map.Children.OfType<Shape>())
             {
                 if (child is Rectangle)
                 {
@@ -347,6 +353,59 @@ namespace Landscaper
 
         #region Items
 
+        public Item EditingItem { get; set; }
+
+        private void SelectItem(Point start)
+        {
+            DeselectItem();
+
+            foreach (var item in Map.Children.OfType<Rectangle>().Where(x => ItemList.Contains(ItemList.FirstOrDefault(y => y.Rectangle == x)))) // get all items on canvas TODO: Make this not so stupid
+            {
+                if (item.WithinBounds(start, start))
+                {
+                    EditingItem = ItemList.FirstOrDefault(x => x.Rectangle == item);
+                    SetItemEditor();
+                    return;
+                }
+            }
+        }
+
+        private void DeselectItem()
+        {
+            EditingItem = null;
+            ItemEditor.IsEnabled = false;
+            ClearItemEditor();
+        }
+
+        private void ClearItemEditor()
+        {
+            EditX.Text = EditY.Text = EditRotation.Text = string.Empty;
+        }
+
+        private void SetItemEditor()
+        {
+            if (EditingItem == null) return;
+
+            EditX.Text = EditingItem.X.ToString();
+            EditY.Text = EditingItem.Y.ToString();
+            EditRotation.Text = EditingItem.Rotation.ToString();
+            ItemEditor.IsEnabled = true;
+        }
+
+        private void UpdateItemEditor(object sender, TextChangedEventArgs args)
+        {
+            float x, y, rot;
+            if (!float.TryParse(EditX.Text, out x)) return;
+            if (!float.TryParse(EditY.Text, out y)) return;
+            if (!float.TryParse(EditRotation.Text, out rot)) return;
+
+            EditingItem.X = x;
+            EditingItem.Y = y;
+            EditingItem.Rotation = rot;
+
+            EditingItem.Rectangle.RenderTransform = new RotateTransform(EditingItem.Rotation, EditingItem.Image.Width / 2, EditingItem.Image.Height / 2);
+        }
+
         private void PlaceItem(Point start)
         {
             var im = new Image
@@ -366,10 +425,11 @@ namespace Landscaper
                 },
                 X = (float)start.X,
                 Y = (float)start.Y,
-                Name = _selectedTileChoice.Name
+                Name = _selectedTileChoice.Name,
+                Image = im
             };
 
-            Canvas.SetLeft(t.Rectangle, t.X - im.Width / 2);
+            Canvas.SetLeft(t.Rectangle, t.X - im.Width / 2);    // have to do width / 2 because unity origin is center of object
             Canvas.SetTop(t.Rectangle, t.Y - im.Height / 2);
             Canvas.SetZIndex(t.Rectangle, ITEM_MID_FLOOR_LAYER);
 
