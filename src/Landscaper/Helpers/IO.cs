@@ -75,6 +75,19 @@ namespace Landscaper.Helpers
             }
             f += "</Doors>";
 
+            f += "<Items>";
+
+            foreach (var item in editor.ItemList)
+            {
+                f += "<Item X='{0}' Y='{1}' Rot='{2}'>".ToFormat(item.X.ToEditorCoordX(editor), item.Y.ToEditorCoordY(editor), item.Rotation);
+
+                f += item.Name;
+
+                f += "</Item>";
+            }
+
+            f += "</Items>";
+
             f += "</Level>";
 
             file.LoadXml(f);

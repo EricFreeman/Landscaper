@@ -423,7 +423,7 @@ namespace Landscaper
                 },
                 X = (float)start.X,
                 Y = (float)start.Y,
-                Name = _selectedTileChoice.Name,
+                Name = _selectedItemChoice.Name,
                 Image = im
             };
 
