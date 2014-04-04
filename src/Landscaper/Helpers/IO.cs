@@ -15,10 +15,10 @@ namespace Landscaper.Helpers
         private const double defaultLastTop = -99999999999999d;
 
         //TODO: Support levels that aren't perfect squares...maybe?  Maybe I don't care because this is a poc anyways...
-        public static void Save(MainWindow editor, string fileLoc, int ts)
+        public static void Save(MainWindow editor, string fileLoc)
         {
-            var offsetX = editor.TileList.Min(x => x.X) * ts;
-            var offsetY = editor.TileList.Max(x => x.Y) * ts; // max because 0,0 in unity is botom left of screen instead of top left
+            var offsetX = editor.TileList.Min(x => x.X) * Gc.TILE_SIZE;
+            var offsetY = editor.TileList.Max(x => x.Y) * Gc.TILE_SIZE; // max because 0,0 in unity is botom left of screen instead of top left
 
             var file = new XmlDocument();
 
@@ -42,18 +42,18 @@ namespace Landscaper.Helpers
             foreach (var wall in editor.WallList)
             {
                 if (wall.Line.Y1 == wall.Line.Y2)
-                    wall.Line.Y1 = wall.Line.Y2 = wall.Line.Y1 - ts;
+                    wall.Line.Y1 = wall.Line.Y2 = wall.Line.Y1 - Gc.TILE_SIZE;
 
                 f += "<Wall>";
                 f += "{0},{1} {2},{3}".ToFormat(
-                    Math.Round((wall.Line.X1 - offsetX) / ts),
-                    Math.Round((offsetY - wall.Line.Y1) / ts),
-                    Math.Round((wall.Line.X2 - offsetX) / ts),
-                    Math.Round((offsetY - wall.Line.Y2) / ts));
+                    Math.Round((wall.Line.X1 - offsetX) / Gc.TILE_SIZE),
+                    Math.Round((offsetY - wall.Line.Y1) / Gc.TILE_SIZE),
+                    Math.Round((wall.Line.X2 - offsetX) / Gc.TILE_SIZE),
+                    Math.Round((offsetY - wall.Line.Y2) / Gc.TILE_SIZE));
                 f += "</Wall>";
 
                 if (wall.Line.Y1 == wall.Line.Y2)
-                    wall.Line.Y1 = wall.Line.Y2 = wall.Line.Y1 + ts;
+                    wall.Line.Y1 = wall.Line.Y2 = wall.Line.Y1 + Gc.TILE_SIZE;
             }
             f+="</Walls>";
 
@@ -61,17 +61,17 @@ namespace Landscaper.Helpers
             foreach (var door in editor.DoorList)
             {
                 if (door.Rotation == 0)
-                    door.Line.Y1 = door.Line.Y2 = door.Line.Y1 - ts;
+                    door.Line.Y1 = door.Line.Y2 = door.Line.Y1 - Gc.TILE_SIZE;
 
                 f += "<Door>";
                 f += "{0},{1},{2}".ToFormat(
-                    Math.Round((door.Line.X1 - offsetX) / ts), 
-                    Math.Round((offsetY - door.Line.Y1) / ts), 
+                    Math.Round((door.Line.X1 - offsetX) / Gc.TILE_SIZE), 
+                    Math.Round((offsetY - door.Line.Y1) / Gc.TILE_SIZE), 
                     door.Rotation);
                 f += "</Door>";
 
                 if (door.Rotation == 0)
-                    door.Line.Y1 = door.Line.Y2 = door.Line.Y1 + ts;
+                    door.Line.Y1 = door.Line.Y2 = door.Line.Y1 + Gc.TILE_SIZE;
             }
             f += "</Doors>";
 
@@ -81,7 +81,7 @@ namespace Landscaper.Helpers
             file.Save(fileLoc);
         }
 
-        public static void Load(MainWindow editor, string fileLoc, int ts)
+        public static void Load(MainWindow editor, string fileLoc)
         {
             editor.Clear(); // clean up anything the user might have been working on before
 
@@ -101,7 +101,7 @@ namespace Landscaper.Helpers
                     var tile = column.SelectSingleNode("Tile");
 
                     editor.SelectTile(tile.InnerText);
-                    editor.PlaceTile(new Point(x * ts, (yOffset - y) * ts));
+                    editor.PlaceTile(new Point(x * Gc.TILE_SIZE, (yOffset - y) * Gc.TILE_SIZE));
 
                     x++;
                 }
@@ -121,8 +121,8 @@ namespace Landscaper.Helpers
                 var isHor = p1[1] == p2[1];
 
                 editor.PlaceWall(
-                    new Point(int.Parse(p1[0]) * ts, (yOffset - int.Parse(p1[1]) + (isHor ? 1 : 0)) * ts), 
-                    new Point((int.Parse(p2[0]) - (isHor ? 1 : 0)) * ts, (yOffset - int.Parse(p2[1]) + (isHor ? 1 : -1)) * ts));
+                    new Point(int.Parse(p1[0]) * Gc.TILE_SIZE, (yOffset - int.Parse(p1[1]) + (isHor ? 1 : 0)) * Gc.TILE_SIZE), 
+                    new Point((int.Parse(p2[0]) - (isHor ? 1 : 0)) * Gc.TILE_SIZE, (yOffset - int.Parse(p2[1]) + (isHor ? 1 : -1)) * Gc.TILE_SIZE));
             }
 
             // Doors
@@ -137,9 +137,9 @@ namespace Landscaper.Helpers
 
                 // when placing doors, you need to put it closer to left or top side of tile it's on or else it will mess up
                 if(drot == 0)
-                    editor.PlaceDoor(new Point(dx * ts + 1, (yOffset - dy + 1) * ts));
+                    editor.PlaceDoor(new Point(dx * Gc.TILE_SIZE + 1, (yOffset - dy + 1) * Gc.TILE_SIZE));
                 if (drot == 90)
-                    editor.PlaceDoor(new Point(dx * ts, (yOffset - dy) * ts + 1));
+                    editor.PlaceDoor(new Point(dx * Gc.TILE_SIZE, (yOffset - dy) * Gc.TILE_SIZE + 1));
             }
         }
 

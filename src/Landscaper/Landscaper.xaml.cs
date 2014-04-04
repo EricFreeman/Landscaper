@@ -26,8 +26,8 @@ namespace Landscaper
 
         private Rectangle selectionRectangle = new Rectangle
         {
-            Width = TILE_SIZE,
-            Height = TILE_SIZE,
+            Width = Gc.TILE_SIZE,
+            Height = Gc.TILE_SIZE,
             Stroke = new SolidColorBrush(Colors.DarkRed),
             Fill = new SolidColorBrush(Colors.Transparent)
         };
@@ -50,8 +50,6 @@ namespace Landscaper
         #endregion
 
         #region Constants
-
-        private const int TILE_SIZE = 32;
 
         private const int FLOOR_LAYER = 0;
         private const int ITEM_LOWER_FLOOR_LAYER = 1;
@@ -132,10 +130,10 @@ namespace Landscaper
             switch (selectedTool)
             {
                 case Tool.Move:
-                    var x = (int)(startPoint.ConvertToTilePosition(TILE_SIZE).X -
-                                  currentPos.ConvertToTilePosition(TILE_SIZE).X);
-                    var y = (int)(startPoint.ConvertToTilePosition(TILE_SIZE).Y - 
-                                  currentPos.ConvertToTilePosition(TILE_SIZE).Y);
+                    var x = (int)(startPoint.ConvertToTilePosition(Gc.TILE_SIZE).X -
+                                  currentPos.ConvertToTilePosition(Gc.TILE_SIZE).X);
+                    var y = (int)(startPoint.ConvertToTilePosition(Gc.TILE_SIZE).Y - 
+                                  currentPos.ConvertToTilePosition(Gc.TILE_SIZE).Y);
 
                     TranslateMap(x, y);
                            
@@ -146,7 +144,7 @@ namespace Landscaper
                     break;
                 case Tool.Remove:
                     RemoveExistingTilesBetween(startPoint, currentPos);
-                    RemoveWallsBetween(startPoint.ConvertToTilePosition(TILE_SIZE), currentPos.ConvertToTilePosition(TILE_SIZE));
+                    RemoveWallsBetween(startPoint.ConvertToTilePosition(Gc.TILE_SIZE), currentPos.ConvertToTilePosition(Gc.TILE_SIZE));
                     break;
                 case Tool.Wall:
                     PlaceWall(startPoint, currentPos);
@@ -154,8 +152,8 @@ namespace Landscaper
             }
 
             isDragging = false;
-            selectionRectangle.Width = TILE_SIZE;
-            selectionRectangle.Height = TILE_SIZE;
+            selectionRectangle.Width = Gc.TILE_SIZE;
+            selectionRectangle.Height = Gc.TILE_SIZE;
         }
 
         private void TranslateMap(int x, int y)
@@ -172,8 +170,8 @@ namespace Landscaper
                     var t = TileList.FirstOrDefault(z => z.Rectangle == child);
                     if (t != null)
                     {
-                        t.X += x / TILE_SIZE;
-                        t.Y += y / TILE_SIZE;
+                        t.X += x / Gc.TILE_SIZE;
+                        t.Y += y / Gc.TILE_SIZE;
                     }
                 }
                 else if (child is Line)
@@ -189,8 +187,8 @@ namespace Landscaper
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            var end = e.GetPosition(Map).ConvertToTilePosition(TILE_SIZE);
-            var start = isDragging ? startPoint.ConvertToTilePosition(TILE_SIZE) : end;
+            var end = e.GetPosition(Map).ConvertToTilePosition(Gc.TILE_SIZE);
+            var start = isDragging ? startPoint.ConvertToTilePosition(Gc.TILE_SIZE) : end;
             var b = new Bounds(start, end);
                 
             Canvas.SetLeft(selectionRectangle, b.LowerX);
@@ -201,8 +199,8 @@ namespace Landscaper
                 if (selectedTool == Tool.Wall)
                     b = b.KeepBoundsWidthOf1();
 
-                selectionRectangle.Width = b.UpperX - b.LowerX + TILE_SIZE;
-                selectionRectangle.Height = b.UpperY - b.LowerY + TILE_SIZE;
+                selectionRectangle.Width = b.UpperX - b.LowerX + Gc.TILE_SIZE;
+                selectionRectangle.Height = b.UpperY - b.LowerY + Gc.TILE_SIZE;
             }
         }
 
@@ -269,7 +267,7 @@ namespace Landscaper
             isDragging = false;
 
             if(save ?? false)
-                IO.Save(this, sfd.FileName, TILE_SIZE);
+                IO.Save(this, sfd.FileName);
         }
 
         private void OnOpen(object sender, RoutedEventArgs e)
@@ -280,7 +278,7 @@ namespace Landscaper
             isDragging = false;
 
             if(open ?? false)
-                IO.Load(this, ofd.FileName, TILE_SIZE);
+                IO.Load(this, ofd.FileName);
         }
 
         private void OnExit(object sender, RoutedEventArgs e)
@@ -299,8 +297,8 @@ namespace Landscaper
 
         private void PlaceTile(Point start, Point end)
         {
-            start = start.ConvertToTilePosition(TILE_SIZE);
-            end = end.ConvertToTilePosition(TILE_SIZE);
+            start = start.ConvertToTilePosition(Gc.TILE_SIZE);
+            end = end.ConvertToTilePosition(Gc.TILE_SIZE);
 
             RemoveExistingTilesBetween(start, end);
             PlaceTilesBetween(start, end);
@@ -310,7 +308,7 @@ namespace Landscaper
         {
             var tiles = Map.Children.OfType<Rectangle>()
                 .Where(x => x != selectionRectangle)
-                .Where(x => x.WithinBounds(start.ConvertToTilePosition(TILE_SIZE), end.ConvertToTilePosition(TILE_SIZE)))
+                .Where(x => x.WithinBounds(start.ConvertToTilePosition(Gc.TILE_SIZE), end.ConvertToTilePosition(Gc.TILE_SIZE)))
                 .ToList();
 
             for (int i = tiles.Count() - 1; i >= 0; i--)
@@ -323,20 +321,20 @@ namespace Landscaper
         private void PlaceTilesBetween(Point start, Point end)
         {
             var b = new Bounds(start, end);
-            var im = new Image {Width = TILE_SIZE, Height = TILE_SIZE, Source = _selectedTileChoice.Image.Source};
+            var im = new Image {Width = Gc.TILE_SIZE, Height = Gc.TILE_SIZE, Source = _selectedTileChoice.Image.Source};
             
-            for (int x = b.LowerX; x <= b.UpperX; x += TILE_SIZE)
-                for (int y = b.LowerY; y <= b.UpperY; y += TILE_SIZE)
+            for (int x = b.LowerX; x <= b.UpperX; x += Gc.TILE_SIZE)
+                for (int y = b.LowerY; y <= b.UpperY; y += Gc.TILE_SIZE)
                 {
                     var t = new Tile {
                         Rectangle = new Rectangle
                         {
-                            Width = TILE_SIZE,
-                            Height = TILE_SIZE,
+                            Width = Gc.TILE_SIZE,
+                            Height = Gc.TILE_SIZE,
                             Fill = new ImageBrush(im.Source)
                         },
-                        X = x / TILE_SIZE,
-                        Y = y / TILE_SIZE,
+                        X = x / Gc.TILE_SIZE,
+                        Y = y / Gc.TILE_SIZE,
                         Name = _selectedTileChoice.Name
                     };
 
@@ -386,8 +384,8 @@ namespace Landscaper
         {
             if (EditingItem == null) return;
 
-            EditX.Text = EditingItem.X.ToString();
-            EditY.Text = EditingItem.Y.ToString();
+            EditX.Text = EditingItem.X.ToEditorCoordX(this).ToString();
+            EditY.Text = EditingItem.Y.ToEditorCoordY(this).ToString();
             EditRotation.Text = EditingItem.Rotation.ToString();
             ItemEditor.IsEnabled = true;
         }
@@ -399,8 +397,8 @@ namespace Landscaper
             if (!float.TryParse(EditY.Text, out y)) return;
             if (!float.TryParse(EditRotation.Text, out rot)) return;
 
-            EditingItem.X = x;
-            EditingItem.Y = y;
+            EditingItem.X = x.FromEditorCoordX(this);
+            EditingItem.Y = y.FromEditorCoordY(this);
             EditingItem.Rotation = rot;
 
             EditingItem.Rectangle.RenderTransform = new RotateTransform(EditingItem.Rotation, EditingItem.Image.Width / 2, EditingItem.Image.Height / 2);
@@ -443,13 +441,13 @@ namespace Landscaper
 
         public void PlaceWall(Point start, Point end)
         {
-            start = start.ConvertToTilePosition(TILE_SIZE);
-            end = end.ConvertToTilePosition(TILE_SIZE);
+            start = start.ConvertToTilePosition(Gc.TILE_SIZE);
+            end = end.ConvertToTilePosition(Gc.TILE_SIZE);
             var b = new Bounds(start, end).KeepBoundsWidthOf1();
 
             //hack to add last tile of wall since walls start at 0,0 but should go the full length of last tile
-            if (b.LowerX == b.UpperX) b.UpperY += TILE_SIZE;
-            else if (b.LowerY == b.UpperY) b.UpperX += TILE_SIZE;
+            if (b.LowerX == b.UpperX) b.UpperY += Gc.TILE_SIZE;
+            else if (b.LowerY == b.UpperY) b.UpperX += Gc.TILE_SIZE;
 
             var w = new Wall
             {
@@ -490,7 +488,7 @@ namespace Landscaper
                 var w = walls[i];
                 if (Math.Abs(w.X2 - w.X1) > Math.Abs(w.Y2 - w.Y1)) // is a horizontal wall
                 {
-                    b.UpperX += TILE_SIZE;
+                    b.UpperX += Gc.TILE_SIZE;
 
                     if (b.LowerX <= w.X1 && b.UpperX <= w.X2) // covers only left side of wall
                         w.X1 = b.UpperX;
@@ -502,14 +500,14 @@ namespace Landscaper
                     {
                         var oldEnd = w.X2;
                         w.X2 = b.LowerX;
-                        PlaceWall(new Point(b.UpperX, w.Y1), new Point(oldEnd - TILE_SIZE, w.Y1));
+                        PlaceWall(new Point(b.UpperX, w.Y1), new Point(oldEnd - Gc.TILE_SIZE, w.Y1));
                     }
 
-                    b.UpperX -= TILE_SIZE;
+                    b.UpperX -= Gc.TILE_SIZE;
                 }
                 else
                 {
-                    b.UpperY += TILE_SIZE;
+                    b.UpperY += Gc.TILE_SIZE;
 
                     if (b.LowerY <= w.Y1 && b.UpperY <= w.Y2) // covers only left side of wall
                         w.Y1 = b.UpperY;
@@ -521,10 +519,10 @@ namespace Landscaper
                     {
                         var oldEnd = w.Y2;
                         w.Y2 = b.LowerY;
-                        PlaceWall(new Point(w.X1, b.UpperY), new Point(w.X1, oldEnd - TILE_SIZE));
+                        PlaceWall(new Point(w.X1, b.UpperY), new Point(w.X1, oldEnd - Gc.TILE_SIZE));
                     }
 
-                    b.UpperY -= TILE_SIZE;
+                    b.UpperY -= Gc.TILE_SIZE;
                 }
 
                 if (w.X1 - w.X2 == 0 && w.Y1 - w.Y2 == 0)
@@ -540,9 +538,9 @@ namespace Landscaper
         public void PlaceDoor(Point start)
         {
             //figure out if they meant to put door on left or top of tile
-            var left = start.X % TILE_SIZE;
-            var top = start.Y % TILE_SIZE;
-            start = start.ConvertToTilePosition(TILE_SIZE);
+            var left = start.X % Gc.TILE_SIZE;
+            var top = start.Y % Gc.TILE_SIZE;
+            start = start.ConvertToTilePosition(Gc.TILE_SIZE);
 
             var d = new Door
             {
@@ -560,12 +558,12 @@ namespace Landscaper
             if (left < top) // they were closer to left side of tile
             {
                 d.Rotation = 90;
-                d.Line.Y2 += TILE_SIZE;
+                d.Line.Y2 += Gc.TILE_SIZE;
             }
             else // else they were closer to top, or were equal distances at which point I'm putting it here because the user is an indecisive bastard
             {
                 d.Rotation = 0;
-                d.Line.X2 += TILE_SIZE;
+                d.Line.X2 += Gc.TILE_SIZE;
             }
 
             Canvas.SetZIndex(d.Line, DOOR_LAYER);

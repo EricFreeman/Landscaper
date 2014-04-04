@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\GC.cs" />
     <Compile Include="Helpers\ImageToSourceConverter.cs" />
     <Compile Include="Helpers\IO.cs" />
     <Compile Include="Landscaper.xaml.cs">
