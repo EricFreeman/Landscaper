@@ -113,7 +113,7 @@ namespace Landscaper.Helpers
                 {
                     var tile = column.SelectSingleNode("Tile");
 
-                    editor.SelectTile(tile.InnerText);
+                    editor.SelectTileChoice(tile.InnerText);
                     editor.PlaceTile(new Point(x * Gc.TILE_SIZE, (yOffset - y) * Gc.TILE_SIZE));
 
                     x++;
@@ -153,6 +153,22 @@ namespace Landscaper.Helpers
                     editor.PlaceDoor(new Point(dx * Gc.TILE_SIZE + 1, (yOffset - dy + 1) * Gc.TILE_SIZE));
                 if (drot == 90)
                     editor.PlaceDoor(new Point(dx * Gc.TILE_SIZE, (yOffset - dy) * Gc.TILE_SIZE + 1));
+            }
+
+            // Items
+            var items = level.SelectSingleNode("Items");
+            foreach (XmlNode item in items.SelectNodes("Item"))
+            {
+                var ix = float.Parse(item.Attributes["X"].InnerText);
+                var iy = float.Parse(item.Attributes["Y"].InnerText);
+                var irot = float.Parse(item.Attributes["Rot"].InnerText);
+
+                editor.SelectItemChoice(item.InnerText);
+                editor.PlaceItem(new Point(
+                    ix.FromEditorCoordX(editor),
+                    iy.FromEditorCoordY(editor)),
+                    irot);
+                editor.EditingItem.Rotation = irot;
             }
         }
 

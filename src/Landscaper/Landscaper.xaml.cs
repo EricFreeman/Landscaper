@@ -18,8 +18,6 @@ namespace Landscaper
     {
         #region Private Properties
 
-        private ItemChoice _selectedTileChoice;
-        private ItemChoice _selectedItemChoice;
         private Point startPoint;
         private Tool selectedTool = Tool.Paint;
         private bool isDragging;
@@ -44,8 +42,10 @@ namespace Landscaper
         public List<Tile> TileList = new List<Tile>(); 
         public List<Wall> WallList = new List<Wall>();
         public List<Door> DoorList = new List<Door>(); 
-        public List<Item> ItemList = new List<Item>(); 
+        public List<Item> ItemList = new List<Item>();
 
+        public ItemChoice SelectedTileChoice;
+        public ItemChoice SelectedItemChoice;
 
         #endregion
 
@@ -79,14 +79,14 @@ namespace Landscaper
         {
             IO.LoadImagesFromDirectory("Content/Tiles", TileChoiceList);
             TilesListBox.ItemsSource = TileChoiceList;
-            _selectedTileChoice = TileChoiceList.FirstOrDefault();
+            SelectedTileChoice = TileChoiceList.FirstOrDefault();
         }
 
         private void LoadItems()
         {
             IO.LoadImagesFromDirectory("Content/Items", ItemChoiceList);
             ItemsListBox.ItemsSource = ItemChoiceList;
-            _selectedItemChoice = ItemChoiceList.FirstOrDefault();
+            SelectedItemChoice = ItemChoiceList.FirstOrDefault();
         }
 
         #endregion
@@ -221,12 +221,12 @@ namespace Landscaper
 
         private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)
         {
-            _selectedTileChoice = (ItemChoice)((ListBox) sender).SelectedItem;
+            SelectedTileChoice = (ItemChoice)((ListBox) sender).SelectedItem;
         }
 
         private void SelectNewItemBrush(object sender, MouseButtonEventArgs e)
         {
-            _selectedItemChoice = (ItemChoice)((ListBox)sender).SelectedItem;
+            SelectedItemChoice = (ItemChoice)((ListBox)sender).SelectedItem;
         }
 
         private void ZoomSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -321,7 +321,7 @@ namespace Landscaper
         private void PlaceTilesBetween(Point start, Point end)
         {
             var b = new Bounds(start, end);
-            var im = new Image {Width = Gc.TILE_SIZE, Height = Gc.TILE_SIZE, Source = _selectedTileChoice.Image.Source};
+            var im = new Image {Width = Gc.TILE_SIZE, Height = Gc.TILE_SIZE, Source = SelectedTileChoice.Image.Source};
             
             for (int x = b.LowerX; x <= b.UpperX; x += Gc.TILE_SIZE)
                 for (int y = b.LowerY; y <= b.UpperY; y += Gc.TILE_SIZE)
@@ -335,7 +335,7 @@ namespace Landscaper
                         },
                         X = x / Gc.TILE_SIZE,
                         Y = y / Gc.TILE_SIZE,
-                        Name = _selectedTileChoice.Name
+                        Name = SelectedTileChoice.Name
                     };
 
                     Canvas.SetLeft(t.Rectangle, x);
@@ -380,7 +380,7 @@ namespace Landscaper
             EditX.Text = EditY.Text = EditRotation.Text = string.Empty;
         }
 
-        private void SetItemEditor()
+        public void SetItemEditor()
         {
             if (EditingItem == null) return;
 
@@ -404,13 +404,13 @@ namespace Landscaper
             EditingItem.Rectangle.RenderTransform = new RotateTransform(EditingItem.Rotation, EditingItem.Image.Width / 2, EditingItem.Image.Height / 2);
         }
 
-        private void PlaceItem(Point start)
+        public void PlaceItem(Point start)
         {
             var im = new Image
             {
-                Width = _selectedItemChoice.Image.Source.Width,
-                Height = _selectedItemChoice.Image.Source.Height,
-                Source = _selectedItemChoice.Image.Source,
+                Width = SelectedItemChoice.Image.Source.Width,
+                Height = SelectedItemChoice.Image.Source.Height,
+                Source = SelectedItemChoice.Image.Source,
             };
 
             var t = new Item
@@ -423,16 +423,51 @@ namespace Landscaper
                 },
                 X = (float)start.X,
                 Y = (float)start.Y,
-                Name = _selectedItemChoice.Name,
+                Name = SelectedItemChoice.Name,
                 Image = im
             };
 
-            Canvas.SetLeft(t.Rectangle, t.X - im.Width / 2);    // have to do width / 2 because unity origin is center of object
-            Canvas.SetTop(t.Rectangle, t.Y - im.Height / 2);
+            Canvas.SetLeft(t.Rectangle, t.X);    // have to do width / 2 because unity origin is center of object
+            Canvas.SetTop(t.Rectangle, t.Y);
             Canvas.SetZIndex(t.Rectangle, ITEM_MID_FLOOR_LAYER);
 
             Map.Children.Add(t.Rectangle);
             ItemList.Add(t);
+            EditingItem = t;
+        }
+
+        public void PlaceItem(Point start, float rot)
+        {
+            var im = new Image
+            {
+                Width = SelectedItemChoice.Image.Source.Width,
+                Height = SelectedItemChoice.Image.Source.Height,
+                Source = SelectedItemChoice.Image.Source,
+            };
+
+            var t = new Item
+            {
+                Rectangle = new Rectangle
+                {
+                    Width = im.Width,
+                    Height = im.Height,
+                    Fill = new ImageBrush(im.Source)
+                },
+                X = (float)start.X,
+                Y = (float)start.Y,
+                Name = SelectedItemChoice.Name,
+                Image = im
+            };
+
+            Canvas.SetLeft(t.Rectangle, t.X + im.Width);    // have to do width / 2 because unity origin is center of object
+            Canvas.SetTop(t.Rectangle, t.Y + im.Height);
+            Canvas.SetZIndex(t.Rectangle, ITEM_MID_FLOOR_LAYER);
+
+            t.Rectangle.RenderTransform = new RotateTransform(rot, t.Image.Source.Width / 2, t.Image.Source.Height / 2);
+
+            Map.Children.Add(t.Rectangle);
+            ItemList.Add(t);
+            EditingItem = t;
         }
 
         #endregion
@@ -575,9 +610,14 @@ namespace Landscaper
 
         #region Shortcuts
 
-        public void SelectTile(string Name)
+        public void SelectTileChoice(string Name)
         {
-            _selectedTileChoice = TileChoiceList.FirstOrDefault(x => x.Name == Name);
+            SelectedTileChoice = TileChoiceList.FirstOrDefault(x => x.Name == Name);
+        }
+
+        public void SelectItemChoice(string Name)
+        {
+            SelectedItemChoice = ItemChoiceList.FirstOrDefault(x => x.Name == Name);
         }
 
         #endregion

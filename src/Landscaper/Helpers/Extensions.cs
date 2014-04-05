@@ -74,25 +74,25 @@ namespace Landscaper.Helpers
 
         public static double ToEditorCoordX(this double d, MainWindow m)
         {
-            var minX = m.TileList.Min(x => x.X) * Gc.TILE_SIZE;
+            var minX = m.TileList.Count == 0 ? 0 : m.TileList.Min(x => x.X) * Gc.TILE_SIZE;
             return (d - minX) / Gc.TILE_SIZE;
         }
 
         public static double ToEditorCoordY(this double d, MainWindow m)
         {
-            var minY = m.TileList.Min(x => x.Y) * Gc.TILE_SIZE;
+            var minY = m.TileList.Count == 0 ? 0 : m.TileList.Min(x => x.Y) * Gc.TILE_SIZE;
             return (d - minY) / Gc.TILE_SIZE;
         }
 
         public static double FromEditorCoordX(this float f, MainWindow m)
         {
-            var minX = m.TileList.Min(x => x.X) * Gc.TILE_SIZE;
+            var minX = m.TileList.Count == 0 ? 0 : m.TileList.Min(x => x.X) * Gc.TILE_SIZE;
             return f * Gc.TILE_SIZE + minX;
         }
 
         public static double FromEditorCoordY(this float f, MainWindow m)
         {
-            var minY = m.TileList.Min(x => x.Y) * Gc.TILE_SIZE;
+            var minY = m.TileList.Count == 0 ? 0 : m.TileList.Min(x => x.Y) * Gc.TILE_SIZE;
             return f * Gc.TILE_SIZE + minY;
         }
     }
