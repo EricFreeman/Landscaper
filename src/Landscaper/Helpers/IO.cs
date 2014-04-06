@@ -79,7 +79,10 @@ namespace Landscaper.Helpers
 
             foreach (var item in editor.ItemList)
             {
-                f += "<Item X='{0}' Y='{1}' Rot='{2}'>".ToFormat(item.X.ToEditorCoordX(editor), item.Y.ToEditorCoordY(editor), item.Rotation);
+                f += "<Item X='{0}' Y='{1}' Rot='{2}'>".ToFormat(
+                    item.X.ToEditorCoordX(editor) + item.Image.Source.Width / Gc.TILE_SIZE, 
+                    offsetY/Gc.TILE_SIZE - item.Y.ToEditorCoordY(editor) - ((item.Image.Source.Height / Gc.TILE_SIZE) - 1), 
+                    item.Rotation);
 
                 f += item.Name;
 
@@ -165,8 +168,8 @@ namespace Landscaper.Helpers
 
                 editor.SelectItemChoice(item.InnerText);
                 editor.PlaceItem(new Point(
-                    ix.FromEditorCoordX(editor),
-                    iy.FromEditorCoordY(editor)),
+                    ix.FromEditorCoordX(editor) - editor.SelectedItemChoice.Image.Source.Width,
+                    yOffset * Gc.TILE_SIZE - iy.FromEditorCoordY(editor) - editor.SelectedItemChoice.Image.Source.Height + Gc.TILE_SIZE),
                     irot);
                 editor.EditingItem.Rotation = irot;
             }
