@@ -15,7 +15,7 @@ namespace Landscaper.Helpers
         private const double defaultLastTop = -99999999999999d;
 
         //TODO: Support levels that aren't perfect squares...maybe?  Maybe I don't care because this is a poc anyways...
-        public static void Save(MainWindow editor, string fileLoc)
+        public static void Save(Editor editor, string fileLoc)
         {
             var offsetX = editor.TileList.Min(x => x.X) * Gc.TILE_SIZE;
             var offsetY = editor.TileList.Max(x => x.Y) * Gc.TILE_SIZE; // max because 0,0 in unity is botom left of screen instead of top left
@@ -97,7 +97,7 @@ namespace Landscaper.Helpers
             file.Save(fileLoc);
         }
 
-        public static void Load(MainWindow editor, string fileLoc)
+        public static void Load(Editor editor, string fileLoc)
         {
             editor.Clear(); // clean up anything the user might have been working on before
 

@@ -53,6 +53,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Editor.cs" />
+    <Compile Include="Tools\ITool.cs" />
+    <Compile Include="Views\UIView.cs" />
     <Page Include="Landscaper.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
