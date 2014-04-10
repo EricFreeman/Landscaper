@@ -19,10 +19,44 @@ namespace Landscaper
 
         #region Interface Properties
 
-        public double ItemX { get; set; }
-        public double ItemY { get; set; }
-        public float ItemRotation { get; set; }
-        public bool IsItemEditEnabled { get; set; }
+        public double ItemX 
+        {
+            get
+            {
+                double t;
+                double.TryParse(EditX.Text, out t);
+                return t;
+            }
+            set { EditX.Text = value.ToString(); } 
+        }
+
+        public double ItemY
+        {
+            get
+            {
+                double t;
+                double.TryParse(EditY.Text, out t);
+                return t;
+            }
+            set { EditY.Text = value.ToString(); }
+        }
+
+        public float ItemRotation
+        {
+            get
+            {
+                float t;
+                float.TryParse(EditRotation.Text, out t);
+                return t;
+            }
+            set { EditRotation.Text = value.ToString(); }
+        }
+
+        public bool IsItemEditEnabled
+        {
+            get { return ItemEditor.IsEnabled; }
+            set { ItemEditor.IsEnabled = value; }
+        }
 
         #endregion
 
@@ -31,7 +65,7 @@ namespace Landscaper
         public MainWindow()
         {
             InitializeComponent();
-            editor = new Editor(Map);
+            editor = new Editor(this, Map);
 
             LoadTiles();
             LoadItems();
@@ -49,6 +83,33 @@ namespace Landscaper
             IO.LoadImagesFromDirectory("Content/Items", editor.ItemChoiceList);
             ItemsListBox.ItemsSource = editor.ItemChoiceList;
             editor.SelectedItemChoice = editor.ItemChoiceList.FirstOrDefault();
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        public void ClearItemEditor()
+        {
+            EditX.Text = EditY.Text = EditRotation.Text = string.Empty;
+        }
+
+        private void UpdateItemEditor(object sender, TextChangedEventArgs args)
+        {
+            if (editor.EditingItem == null) return;
+            float TempFloat;
+            if (!float.TryParse(EditX.Text, out TempFloat) ||
+                !float.TryParse(EditY.Text, out TempFloat) ||
+                !float.TryParse(EditRotation.Text, out TempFloat)) return;
+
+            editor.EditingItem.X = ((float)ItemX).FromEditorCoordX(editor);
+            editor.EditingItem.Y = ((float)ItemY).FromEditorCoordY(editor);
+            editor.EditingItem.Rotation = ItemRotation;
+
+            editor.EditingItem.Rectangle.RenderTransform = 
+                new RotateTransform(
+                    editor.EditingItem.Rotation, editor.EditingItem.Image.Width / 2,
+                    editor.EditingItem.Image.Height / 2);
         }
 
         #endregion

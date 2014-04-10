@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
+using Landscaper.Views;
 
 namespace Landscaper.Models
 {
@@ -26,6 +27,7 @@ namespace Landscaper.Models
         public ItemChoice SelectedTileChoice;
         public ItemChoice SelectedItemChoice;
 
+        public readonly UIView _view;
         public Canvas Map;
 
         #endregion
@@ -60,8 +62,9 @@ namespace Landscaper.Models
 
         #endregion
 
-        public Editor(Canvas map)
+        public Editor(UIView view, Canvas map)
         {
+            _view = view;
             Map = map;
             Canvas.SetZIndex(selectionRectangle, SELECTION_RECTANGLE_LAYER);
             Map.Children.Add(selectionRectangle);
@@ -99,7 +102,7 @@ namespace Landscaper.Models
             PlaceTile(start, start);
         }
 
-        private void PlaceTile(Point start, Point end)
+        public void PlaceTile(Point start, Point end)
         {
             start = start.ConvertToTilePosition(Gc.TILE_SIZE);
             end = end.ConvertToTilePosition(Gc.TILE_SIZE);
@@ -108,7 +111,7 @@ namespace Landscaper.Models
             PlaceTilesBetween(start, end);
         }
 
-        private void RemoveExistingTilesBetween(Point start, Point end)
+        public void RemoveExistingTilesBetween(Point start, Point end)
         {
             var tiles = Map.Children.OfType<Rectangle>()
                 .Where(x => x != selectionRectangle)
@@ -158,7 +161,7 @@ namespace Landscaper.Models
 
         public Item EditingItem { get; set; }
 
-        private void SelectItem(Point start)
+        public void SelectItem(Point start)
         {
             DeselectItem();
 
@@ -173,40 +176,21 @@ namespace Landscaper.Models
             }
         }
 
-        private void DeselectItem()
+        public void DeselectItem()
         {
             EditingItem = null;
-            ItemEditor.IsEnabled = false;
-            ClearItemEditor();
-        }
-
-        private void ClearItemEditor()
-        {
-            EditX.Text = EditY.Text = EditRotation.Text = string.Empty;
+            _view.IsItemEditEnabled = false;
+            _view.ClearItemEditor();
         }
 
         public void SetItemEditor()
         {
             if (EditingItem == null) return;
 
-            EditX.Text = EditingItem.X.ToEditorCoordX(this).ToString();
-            EditY.Text = EditingItem.Y.ToEditorCoordY(this).ToString();
-            EditRotation.Text = EditingItem.Rotation.ToString();
-            ItemEditor.IsEnabled = true;
-        }
-
-        private void UpdateItemEditor(object sender, TextChangedEventArgs args)
-        {
-            float x, y, rot;
-            if (!float.TryParse(EditX.Text, out x)) return;
-            if (!float.TryParse(EditY.Text, out y)) return;
-            if (!float.TryParse(EditRotation.Text, out rot)) return;
-
-            EditingItem.X = x.FromEditorCoordX(this);
-            EditingItem.Y = y.FromEditorCoordY(this);
-            EditingItem.Rotation = rot;
-
-            EditingItem.Rectangle.RenderTransform = new RotateTransform(EditingItem.Rotation, EditingItem.Image.Width / 2, EditingItem.Image.Height / 2);
+            _view.ItemX = EditingItem.X.ToEditorCoordX(this);
+            _view.ItemY = EditingItem.Y.ToEditorCoordY(this);
+            _view.ItemRotation = EditingItem.Rotation;
+            _view.IsItemEditEnabled = true;
         }
 
         public void PlaceItem(Point start)
@@ -315,7 +299,7 @@ namespace Landscaper.Models
         }
 
         //TODO: Future Eric, make this not so duplicated and unreadable
-        private void RemoveWallsBetween(Point start, Point end)
+        public void RemoveWallsBetween(Point start, Point end)
         {
             var walls = Map.Children.OfType<Line>()
                 .Where(x => x.WithinBounds(start, end))
