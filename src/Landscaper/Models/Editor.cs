@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
+using Landscaper.Tools;
 using Landscaper.Views;
 
 namespace Landscaper.Models
@@ -35,7 +36,8 @@ namespace Landscaper.Models
         #region (Should Be) Private Properties
 
         public Point startPoint;
-        public Tool selectedTool = Tool.Paint;
+        public Point currentPoint;
+        public ITool selectedTool = new Paint();
         public bool isDragging;
 
         public Rectangle selectionRectangle = new Rectangle
@@ -62,6 +64,8 @@ namespace Landscaper.Models
 
         #endregion
 
+        #region Constructor
+
         public Editor(UIView view, Canvas map)
         {
             _view = view;
@@ -69,6 +73,10 @@ namespace Landscaper.Models
             Canvas.SetZIndex(selectionRectangle, SELECTION_RECTANGLE_LAYER);
             Map.Children.Add(selectionRectangle);
         }
+
+        #endregion
+
+        #region Helpers
 
         public void Clear()
         {
@@ -79,6 +87,8 @@ namespace Landscaper.Models
             TileList.Clear();
             ItemList.Clear();
         }
+
+        #endregion
 
         #region Shortcuts
 
@@ -93,7 +103,6 @@ namespace Landscaper.Models
         }
 
         #endregion
-
 
         #region Tiles
 

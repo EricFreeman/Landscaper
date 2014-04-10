@@ -55,6 +55,13 @@
     </ApplicationDefinition>
     <Compile Include="Models\Editor.cs" />
     <Compile Include="Tools\ITool.cs" />
+    <Compile Include="Tools\Selection.cs" />
+    <Compile Include="Tools\Item.cs" />
+    <Compile Include="Tools\Paint.cs" />
+    <Compile Include="Tools\Remove.cs" />
+    <Compile Include="Tools\Wall.cs" />
+    <Compile Include="Tools\Door.cs" />
+    <Compile Include="Tools\Move.cs" />
     <Compile Include="Views\UIView.cs" />
     <Page Include="Landscaper.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -57,6 +58,8 @@ namespace Landscaper
             get { return ItemEditor.IsEnabled; }
             set { ItemEditor.IsEnabled = value; }
         }
+
+        public bool LeftClick { get; set; }
 
         #endregion
 
@@ -123,18 +126,7 @@ namespace Landscaper
             WasDown = true;
             editor.startPoint = e.GetPosition(Map);
 
-            switch (editor.selectedTool)
-            {
-                case Tool.Selection:
-                    editor.SelectItem(editor.startPoint);
-                    return;
-                case Tool.Item:
-                    editor.PlaceItem(editor.startPoint);
-                    return;
-                case Tool.Door:
-                    editor.PlaceDoor(editor.startPoint);
-                    return;
-            }
+            editor.selectedTool.OnMouseDown(editor, this);
 
             editor.isDragging = true;
         }
@@ -146,40 +138,18 @@ namespace Landscaper
 
             WasDown = false;
 
-            var currentPos = e.GetPosition(Map);
+            editor.currentPoint = e.GetPosition(Map);
 
-            var leftClick = e.ChangedButton == MouseButton.Left;
+            LeftClick = e.ChangedButton == MouseButton.Left;
 
-            switch (editor.selectedTool)
-            {
-                case Tool.Move:
-                    var x = (int)(editor.startPoint.ConvertToTilePosition(Gc.TILE_SIZE).X -
-                                  currentPos.ConvertToTilePosition(Gc.TILE_SIZE).X);
-                    var y = (int)(editor.startPoint.ConvertToTilePosition(Gc.TILE_SIZE).Y - 
-                                  currentPos.ConvertToTilePosition(Gc.TILE_SIZE).Y);
-
-                    TranslateMap(x, y);
-                           
-                    break;
-                case Tool.Paint:
-                    if (leftClick) editor.PlaceTile(editor.startPoint, currentPos);
-                    else editor.RemoveExistingTilesBetween(editor.startPoint, currentPos);
-                    break;
-                case Tool.Remove:
-                    editor.RemoveExistingTilesBetween(editor.startPoint, currentPos);
-                    editor.RemoveWallsBetween(editor.startPoint.ConvertToTilePosition(Gc.TILE_SIZE), currentPos.ConvertToTilePosition(Gc.TILE_SIZE));
-                    break;
-                case Tool.Wall:
-                    editor.PlaceWall(editor.startPoint, currentPos);
-                    break;
-            }
+            editor.selectedTool.OnMouseUp(editor, this);
 
             editor.isDragging = false;
             editor.selectionRectangle.Width = Gc.TILE_SIZE;
             editor.selectionRectangle.Height = Gc.TILE_SIZE;
         }
 
-        private void TranslateMap(int x, int y)
+        public void TranslateMap(int x, int y)
         {
             editor.DeselectItem();
 
@@ -219,7 +189,7 @@ namespace Landscaper
 
             if (editor.isDragging)
             {
-                if (editor.selectedTool == Tool.Wall)
+                if (editor.selectedTool.IsLine)
                     b = b.KeepBoundsWidthOf1();
 
                 editor.selectionRectangle.Width = b.UpperX - b.LowerX + Gc.TILE_SIZE;
@@ -239,7 +209,7 @@ namespace Landscaper
         private void OnToolbarSelect(object sender, MouseButtonEventArgs e)
         {
             var b = (ToggleButton) sender;
-            Enum.TryParse(b.Name, out editor.selectedTool);
+            var tool = Assembly.GetExecutingAssembly().GetType(b.Name); // TODO: Figure out how to actually do this!
         }
 
         private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)
