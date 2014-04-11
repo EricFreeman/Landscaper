@@ -8,7 +8,7 @@ namespace Landscaper.Tools
         bool IsDragging { get; }
         bool IsLine { get; }
 
-        void OnMouseUp(Editor editor, UIView view);
         void OnMouseDown(Editor e, UIView view);
+        void OnMouseUp(Editor editor, UIView view);
     }
 }

@@ -8,9 +8,9 @@ namespace Landscaper.Tools
         public bool IsDragging { get { return true; } }
         public bool IsLine { get { return true; } }
 
-        public void OnMouseUp(Editor editor, UIView view) { }
+        public void OnMouseDown(Editor editor, UIView view) { }
 
-        public void OnMouseDown(Editor editor, UIView view)
+        public void OnMouseUp(Editor editor, UIView view)
         {
             editor.PlaceWall(editor.startPoint, editor.currentPoint);
         }

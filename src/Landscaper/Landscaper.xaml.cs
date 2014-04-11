@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Landscaper.Helpers;
 using Landscaper.Models;
+using Landscaper.Tools;
 using Landscaper.Views;
 using Microsoft.Win32;
 
@@ -119,15 +120,14 @@ namespace Landscaper
 
         #region Mouse Handlers
 
+        // This is a hack to stop visual studio calling OnMouseUp if you double click a file to open from menu
         public bool WasDown = false;
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             WasDown = true;
             editor.startPoint = e.GetPosition(Map);
-
             editor.selectedTool.OnMouseDown(editor, this);
-
             editor.isDragging = true;
         }
 
@@ -137,13 +137,9 @@ namespace Landscaper
                 return;
 
             WasDown = false;
-
             editor.currentPoint = e.GetPosition(Map);
-
             LeftClick = e.ChangedButton == MouseButton.Left;
-
             editor.selectedTool.OnMouseUp(editor, this);
-
             editor.isDragging = false;
             editor.selectionRectangle.Width = Gc.TILE_SIZE;
             editor.selectionRectangle.Height = Gc.TILE_SIZE;
@@ -209,7 +205,7 @@ namespace Landscaper
         private void OnToolbarSelect(object sender, MouseButtonEventArgs e)
         {
             var b = (ToggleButton) sender;
-            var tool = Assembly.GetExecutingAssembly().GetType(b.Name); // TODO: Figure out how to actually do this!
+            editor.selectedTool = (ITool)Assembly.GetExecutingAssembly().CreateInstance("Landscaper.Tools." + b.Name);
         }
 
         private void SelectNewTileBrush(object sender, MouseButtonEventArgs e)

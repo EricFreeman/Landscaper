@@ -9,12 +9,12 @@ namespace Landscaper.Tools
         public bool IsDragging { get { return true; } }
         public bool IsLine { get { return false; } }
 
-        public void OnMouseUp(Editor editor, UIView view) { }
+        public void OnMouseDown(Editor editor, UIView view) { }
 
-        public void OnMouseDown(Editor editor, UIView view)
+        public void OnMouseUp(Editor editor, UIView view)
         {
             var x = (int)(editor.startPoint.ConvertToTilePosition(Gc.TILE_SIZE).X -
-                                  editor.currentPoint.ConvertToTilePosition(Gc.TILE_SIZE).X);
+                          editor.currentPoint.ConvertToTilePosition(Gc.TILE_SIZE).X);
             var y = (int)(editor.startPoint.ConvertToTilePosition(Gc.TILE_SIZE).Y -
                           editor.currentPoint.ConvertToTilePosition(Gc.TILE_SIZE).Y);
 
