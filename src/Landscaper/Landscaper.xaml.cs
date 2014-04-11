@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using Landscaper.Helpers;
 using Landscaper.Models;
 using Landscaper.Tools;
@@ -143,35 +141,6 @@ namespace Landscaper
             editor.isDragging = false;
             editor.selectionRectangle.Width = Gc.TILE_SIZE;
             editor.selectionRectangle.Height = Gc.TILE_SIZE;
-        }
-
-        public void TranslateMap(int x, int y)
-        {
-            editor.DeselectItem();
-
-            foreach (var child in Map.Children.OfType<Shape>())
-            {
-                if (child is Rectangle)
-                {
-                    Canvas.SetLeft(child, Canvas.GetLeft(child) + x);
-                    Canvas.SetTop(child, Canvas.GetTop(child) + y);
-
-                    var t = editor.TileList.FirstOrDefault(z => z.Rectangle == child);
-                    if (t != null)
-                    {
-                        t.X += x / Gc.TILE_SIZE;
-                        t.Y += y / Gc.TILE_SIZE;
-                    }
-                }
-                else if (child is Line)
-                {
-                    var c = child as Line;
-                    c.X1 += x;
-                    c.X2 += x;
-                    c.Y1 += y;
-                    c.Y2 += y;
-                }
-            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)

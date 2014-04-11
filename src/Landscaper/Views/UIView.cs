@@ -10,6 +10,5 @@
         bool LeftClick { get; set; }
 
         void ClearItemEditor();
-        void TranslateMap(int x, int y);
     }
 }
