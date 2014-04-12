@@ -34,37 +34,8 @@
                  Grid.Column="0"
                  Grid.ColumnSpan="2"
                  Background="White">
-      <ToolBar Background="White">
-        <RadioButton Name="Move"
-                     PreviewMouseUp="OnToolbarSelect">
-          Move
-        </RadioButton>
-        <RadioButton Name="Selection"
-                     PreviewMouseUp="OnToolbarSelect">
-          Selection
-        </RadioButton>
-        <RadioButton Name="Item"
-                     PreviewMouseUp="OnToolbarSelect">
-          Item
-        </RadioButton>
-        <RadioButton Name="Paint"
-                     PreviewMouseUp="OnToolbarSelect"
-                     IsChecked="True">
-          Paint
-        </RadioButton>
-        <RadioButton Name="Remove"
-                     PreviewMouseUp="OnToolbarSelect">
-          Remove
-        </RadioButton>
-        <RadioButton Name="Wall"
-                     PreviewMouseUp="OnToolbarSelect">
-          Wall
-        </RadioButton>
-        <RadioButton Name="Door"
-                     PreviewMouseUp="OnToolbarSelect">
-          Door
-        </RadioButton>
-      </ToolBar>
+      <ToolBar Name="ToolBar" 
+               Background="White" />
 
       <ToolBar Background="White">
         <TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value}"

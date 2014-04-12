@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows;
@@ -71,6 +72,7 @@ namespace Landscaper
 
             LoadTiles();
             LoadItems();
+            LoadTools();
         }
 
         private void LoadTiles()
@@ -85,6 +87,23 @@ namespace Landscaper
             IO.LoadImagesFromDirectory("Content/Items", editor.ItemChoiceList);
             ItemsListBox.ItemsSource = editor.ItemChoiceList;
             editor.SelectedItemChoice = editor.ItemChoiceList.FirstOrDefault();
+        }
+
+        private void LoadTools()
+        {
+            var t = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetInterfaces().Contains(typeof (ITool))).ToList();
+            foreach (var tool in t)
+            {
+                var rb = new RadioButton
+                {
+                    Content = tool.Name,
+                    Name = tool.Name,
+                    IsChecked = tool.Name == editor.selectedTool.GetType().Name
+                };
+                rb.Click += OnToolbarSelect;
+
+                ToolBar.Items.Add(rb);
+            }
         }
 
         #endregion
@@ -171,7 +190,7 @@ namespace Landscaper
 
         #region Toolbar
 
-        private void OnToolbarSelect(object sender, MouseButtonEventArgs e)
+        private void OnToolbarSelect(object sender, RoutedEventArgs e)
         {
             var b = (ToggleButton) sender;
             editor.selectedTool = (ITool)Assembly.GetExecutingAssembly().CreateInstance("Landscaper.Tools." + b.Name);
